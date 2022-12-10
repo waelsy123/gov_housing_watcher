@@ -4,7 +4,8 @@
   "description": "",
   "main": "test.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "tsc": "tsc",
+    "start:prod": "node dist/ex.js"
   },
   "author": "",
   "license": "ISC",

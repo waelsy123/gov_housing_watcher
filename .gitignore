@@ -1,2 +1,3 @@
 node_mod*
 package-lock.json
+terra/.*
