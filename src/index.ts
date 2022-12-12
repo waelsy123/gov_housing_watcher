@@ -73,7 +73,7 @@ const url = "https://sozialbau.at/angebot/sofort-verfuegbar/";
 let previousList = new Set();
 
 // Create a cron job that runs every 5 seconds
-cron.schedule("*/5 * * * * *", async () => {
+cron.schedule("*/1 * * * * *", async () => {
   const currentList = await getListFromUrl(url);
   let diff = [...currentList].filter((x) => !previousList.has(x));
 

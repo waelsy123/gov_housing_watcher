@@ -1,0 +1,13 @@
+{
+    "manifest_version": 2,
+    "name": "Script Alert",
+    "version": "1.0.0",
+    "permissions": [
+        "activeTab"
+    ],
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    }
+}

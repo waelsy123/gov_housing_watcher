@@ -31,6 +31,6 @@ npm install
 npm run tsc
 
 # Use pm2 to run the index.ts file
-pm2 start dist/index.js
+# pm2 start dist/index.js
   EOF
 }
