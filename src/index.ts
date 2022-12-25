@@ -1,3 +1,4 @@
+import { applyToHouse } from './applyToHouse';
 const axios = require("axios");
 const cheerio = require("cheerio");
 const cron = require("node-cron");
@@ -29,14 +30,30 @@ bot.on("message", (msg) => {
   fs.writeFileSync("chat_ids.txt", Array.from(chatIds).join("\n"));
 });
 
+async function registerToHouse(link: string) {
+  const response = await axios.get(link);
+  const html = response.data;
+  const $ = cheerio.load(html);
+  const adLink = 'https://www.sozialbau.at' + $(".tx-wx-sozialbau p a").first().attr('href');
+  console.log("🚀 ~ file: index.ts:38 ~ registerToHouse ~ adLink", adLink)
+
+  applyToHouse(adLink);
+}
+
 // define a function to send "Bingo" to all stored chat IDs
-function sendMessageToAllChats(diff: string) {
-  for (const chatId of chatIds) {
-    bot.sendMessage(chatId, diff);
+async function sendMessageToAllChats(diff: House[]) {
+  console.log("🚀 ~ file: index.ts:45 ~ sendMessageToAllChats ~ length", diff.length)
+
+  for (const house of diff) {
+    await registerToHouse(house.link);
+
+    for (const chatId of chatIds) {
+      bot.sendMessage(chatId, house.text + '\n' + house.link);
+    }
   }
 }
 
-function extractTableRows(html: string): Set<string> {
+function extractTableRows(html: string): Set<House> {
   // Use cheerio to parse the HTML and get the first table element
   const $ = cheerio.load(html);
   const table = $("table").first();
@@ -45,16 +62,28 @@ function extractTableRows(html: string): Set<string> {
   const rows = table.find("tr");
 
   // Create a Set to store the rows
-  const rowSet: Set<string> = new Set();
+  const rowSet: Set<any> = new Set();
 
   // Add the text of each row to the Set, after trimming it
-  rows.each((i, row) => rowSet.add($(row).text().trim()));
+  rows.each((i, row) => {
+    const link = $(row).find('a').first().attr('href');
+    if (!link) { return }
+    const roomCount = Number($(row).find('td:eq(1)').text());
+    if (roomCount !== 3) {
+      return
+    }
+    rowSet.add({ link: 'https://www.sozialbau.at' + link, text: $(row).text().trim() })
+  });
 
   // Return the Set of rows
   return rowSet;
 }
 
-async function getListFromUrl(url: string): Promise<Set<string>> {
+interface House {
+  link?: string
+  text: string
+}
+async function getListFromUrl(url: string): Promise<Set<House>> {
   // Use axios to fetch the HTML source code from the URL
   const response = await axios.get(url);
   const html = response.data;
@@ -69,21 +98,24 @@ async function getListFromUrl(url: string): Promise<Set<string>> {
 // URL of the webpage
 const url = "https://sozialbau.at/angebot/sofort-verfuegbar/";
 
-// Previous value of the page source code
-let previousList = new Set();
+async function main() {
+  // Previous value of the page source code
+  const l = [...await getListFromUrl(url)];
 
-// Create a cron job that runs every 5 seconds
-cron.schedule("*/1 * * * * *", async () => {
-  const currentList = await getListFromUrl(url);
-  let diff = [...currentList].filter((x) => !previousList.has(x));
+  let previousList = new Set([...l].map(x => x.link));
 
-  console.log("🚀 ~ file: ex.ts:78 ~ cron.schedule ~ diff", diff);
+  // Create a cron job that runs every 5 seconds
+  cron.schedule("*/2 * * * * *", async () => {
+    const currentList = await getListFromUrl(url);
+    let diff = [...currentList].filter((x) => !previousList.has(x.link));
 
-  // Check if the current value is different from the previous value
-  if (diff && diff.length) {
-    const diffString = diff.join("\n");
-    sendMessageToAllChats(diffString);
+    // Check if the current value is different from the previous value
+    if (diff && diff.length) {
+      sendMessageToAllChats(diff);
 
-    previousList = currentList;
-  }
-});
+      previousList = new Set([...currentList].map(x => x.link));
+    }
+  });
+}
+
+main();

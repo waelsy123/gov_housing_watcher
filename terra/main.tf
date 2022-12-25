@@ -5,8 +5,8 @@ provider "aws" {
 resource "aws_instance" "sozialwatcher" {
   ami           = "ami-0ac019f4fcb7cb7e6"
   instance_type = "t2.micro"
- key_name = "id_rsa.pub"
- 
+  key_name      = "wasim-mac"
+
   user_data = <<-EOF
 #!/bin/bash
 
