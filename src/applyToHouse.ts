@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import * as puppeteer from "puppeteer";
 
 function sleep(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
@@ -23,7 +23,11 @@ const data = {
 }
 
 export const applyToHouse = async (url) => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox']
+  });
+
   const page = await browser.newPage();
 
   await page.setViewport({
@@ -134,7 +138,7 @@ export const applyToHouse = async (url) => {
 
   await page.keyboard.press("Enter");
 
-  // await page.screenshot({ path: "after.png", fullPage: true });
+  await page.screenshot({ path: "after.png", fullPage: true });
 
   // await page.click('button[type="submit"]');
 
