@@ -25,10 +25,11 @@ npm install pm2 -g
 cd /home/ubuntu
 
 # Clone the repository containing the index.ts file
-git clone https://github.com/waelsy123/chatgpt.git
+git clone https://github.com/waelsy123/gov_housing_watcher.git
+git checkout wasim-wbm
 
 # Install the required dependencies
-cd chatgpt
+cd gov_housing_watcher
 npm install --unsafe-perm
 npm run tsc
 
