@@ -1,11 +1,12 @@
 {
-  "name": "chatgpt",
+  "name": "gov_housing_watcher",
   "version": "1.0.0",
   "description": "",
   "main": "test.js",
   "scripts": {
     "tsc": "tsc",
-    "start:prod": "node dist/index.js"
+    "start:prod": "node dist/index.js",
+    "start": "node dist/index.js"
   },
   "author": "",
   "license": "ISC",

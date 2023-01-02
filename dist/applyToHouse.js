@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.applyToHouse = void 0;
-const puppeteer_1 = require("puppeteer");
+const puppeteer = require("puppeteer");
 function sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
@@ -32,7 +32,10 @@ const data = {
     email: "abodjarad12@gmail.com"
 };
 const applyToHouse = (url) => __awaiter(void 0, void 0, void 0, function* () {
-    const browser = yield puppeteer_1.default.launch();
+    const browser = yield puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox']
+    });
     const page = yield browser.newPage();
     yield page.setViewport({
         width: 1200,
@@ -101,7 +104,7 @@ const applyToHouse = (url) => __awaiter(void 0, void 0, void 0, function* () {
     yield hausnr.type(data.hausnr);
     // await page.screenshot({ path: "before.png", fullPage: true });
     yield page.keyboard.press("Enter");
-    // await page.screenshot({ path: "after.png", fullPage: true });
+    yield page.screenshot({ path: "after.png", fullPage: true });
     // await page.click('button[type="submit"]');
     yield browser.close();
 });
