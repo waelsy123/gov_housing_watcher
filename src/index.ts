@@ -1,4 +1,4 @@
-import { applyToHouse } from './applyToHouse';
+// import { applyToHouse } from './applyToHouse';
 const axios = require("axios");
 const cheerio = require("cheerio");
 const cron = require("node-cron");
