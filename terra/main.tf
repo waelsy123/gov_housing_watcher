@@ -7,6 +7,10 @@ resource "aws_instance" "sozialwatcher" {
   instance_type = "t2.micro"
   key_name      = "wasim-mac"
 
+  tags = {
+    Name = "wasim_WBM"
+  }
+
   user_data = <<-EOF
 #!/bin/bash
 
@@ -26,7 +30,7 @@ cd /home/ubuntu
 
 # Clone the repository containing the index.ts file
 git clone https://github.com/waelsy123/gov_housing_watcher.git
-git checkout wasim-wbm
+sudo git checkout wasim-wbm
 
 # Install the required dependencies
 cd gov_housing_watcher
