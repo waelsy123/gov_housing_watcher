@@ -1,4 +1,4 @@
-import { applyToHouse } from './applyToHouse';
+// import { applyToHouse } from './applyToHouse';
 const axios = require("axios");
 const cheerio = require("cheerio");
 const cron = require("node-cron");
@@ -6,8 +6,10 @@ const cron = require("node-cron");
 import * as TelegramBot from "node-telegram-bot-api";
 import * as fs from "fs";
 
+export const domain = 'https://www.wbm.de/'
+
 // Create a Telegram bot
-const token = "5885795688:AAElkwJZiBfuVhEtno2ZdciD6pLQRKzC8Og";
+const token = "5813573616:AAGp6nX4WEoST5KZH2HtGbhput5KWHQE1dY";
 const bot = new TelegramBot(token, { polling: true });
 
 // create a Set to store the chat IDs of incoming messages
@@ -31,21 +33,19 @@ bot.on("message", (msg) => {
 });
 
 async function registerToHouse(link: string) {
-  const response = await axios.get(link);
-  const html = response.data;
-  const $ = cheerio.load(html);
-  const adLink = 'https://www.sozialbau.at' + $(".tx-wx-sozialbau p a").first().attr('href');
-  console.log("🚀 ~ file: index.ts:38 ~ registerToHouse ~ adLink", adLink)
+  // const response = await axios.get(link);
+  // const html = response.data;
+  // const $ = cheerio.load(html);
+  // const adLink = domain + $(".tx-wx-sozialbau p a").first().attr('href');
+  // console.log("🚀 ~ file: index.ts:38 ~ registerToHouse ~ adLink", adLink)
 
-  applyToHouse(adLink);
+  // applyToHouse(adLink);
 }
 
 // define a function to send "Bingo" to all stored chat IDs
 async function sendMessageToAllChats(diff: House[]) {
-  console.log("🚀 ~ file: index.ts:45 ~ sendMessageToAllChats ~ length", diff.length)
-
   for (const house of diff) {
-    await registerToHouse(house.link);
+    // await registerToHouse(house.link);
 
     for (const chatId of chatIds) {
       bot.sendMessage(chatId, house.text + '\n' + house.link);
@@ -53,30 +53,32 @@ async function sendMessageToAllChats(diff: House[]) {
   }
 }
 
-function extractTableRows(html: string): Set<House> {
+function extractItems(html: string): Set<House> {
   // Use cheerio to parse the HTML and get the first table element
   const $ = cheerio.load(html);
-  const table = $("table").first();
+  const items = $('.openimmo-search-list-item')
 
-  // Get all rows from the table
-  const rows = table.find("tr");
-
-  // Create a Set to store the rows
-  const rowSet: Set<any> = new Set();
+  let list: Set<any> = new Set()
 
   // Add the text of each row to the Set, after trimming it
-  rows.each((i, row) => {
-    const link = $(row).find('a').first().attr('href');
+  items.each((i, item) => {
+    const link = $(item).find('a').first().attr('href');
     if (!link) { return }
-    const roomCount = Number($(row).find('td:eq(1)').text());
-    if (roomCount !== 3) {
-      return
-    }
-    rowSet.add({ link: 'https://www.sozialbau.at' + link, text: $(row).text().trim() })
+    const area = $(item).find('.category').text().trim();
+    const address = $(item).find('.address').text().trim();
+    const desc = $(item).find('.main-property-list').text().trim();
+    // let mitte = true;
+
+    // // const roomCount = Number($(item).find('td:eq(1)').text());
+    // if (area.includes('SPANDAU')) {
+    //   mitte = false;
+    // }
+
+    list.add({ link: domain + link, text: `\n${area}\n${address}\n${desc}` })
   });
 
   // Return the Set of rows
-  return rowSet;
+  return list;
 }
 
 interface House {
@@ -89,18 +91,18 @@ async function getListFromUrl(url: string): Promise<Set<House>> {
   const html = response.data;
 
   // Extract the rows of the first table element
-  const rows = extractTableRows(html);
+  const rows = extractItems(html);
 
   // Return the Set of rows
   return rows;
 }
 
 // URL of the webpage
-const url = "https://sozialbau.at/angebot/sofort-verfuegbar/";
+const url = "https://www.wbm.de/wohnungen-berlin/angebote-wbm/";
 
 async function main() {
   // Previous value of the page source code
-  const l = [...await getListFromUrl(url)];
+  const l = [] // [...await getListFromUrl(url)];
 
   let previousList = new Set([...l.slice(1, l.length)].map(x => x.link));
 

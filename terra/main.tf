@@ -2,13 +2,13 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_instance" "sozialwatcher" {
+resource "aws_instance" "wasim_WBM" {
   ami           = "ami-0ac019f4fcb7cb7e6"
   instance_type = "t2.micro"
   key_name      = "wasim-mac"
 
   tags = {
-    Name = "abod"
+    Name = "wasim_WBM"
   }
 
   user_data = <<-EOF
@@ -34,6 +34,8 @@ git clone https://github.com/waelsy123/gov_housing_watcher.git
 # Install the required dependencies
 sudo chmod 777 gov_housing_watcher
 cd gov_housing_watcher
+sudo git checkout wasim-wbm
+
 npm install --unsafe-perm
 npm run tsc
 
