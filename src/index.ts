@@ -104,7 +104,7 @@ async function main() {
   // Previous value of the page source code
   const l = [] // [...await getListFromUrl(url)];
 
-  let previousList = new Set([...l].map(x => x.link));
+  let previousList = new Set([...l.slice(1, l.length)].map(x => x.link));
 
   // Create a cron job that runs every 5 seconds
   cron.schedule("*/1 * * * * *", async () => {

@@ -30,21 +30,23 @@ cd /home/ubuntu
 
 # Clone the repository containing the index.ts file
 git clone https://github.com/waelsy123/gov_housing_watcher.git
-sudo git checkout wasim-wbm
 
 # Install the required dependencies
+sudo chmod 777 gov_housing_watcher
 cd gov_housing_watcher
+sudo git checkout wasim-wbm
+
 npm install --unsafe-perm
 npm run tsc
 
-sudo apt-get install libpangocairo-1.0-0 libx11-xcb1 libxcomposite1 libxcursor1 libxdamage1 libxi6 libxtst6 libnss3 libcups2 libxss1 libxrandr2 libgconf2-4 libasound2 libatk1.0-0 libgtk-3-0
+sudo apt-get install -y libpangocairo-1.0-0 libx11-xcb1 libxcomposite1 libxcursor1 libxdamage1 libxi6 libxtst6 libnss3 libcups2 libxss1 libxrandr2 libgconf2-4 libasound2 libatk1.0-0 libgtk-3-0
 sudo apt-get install -y libgbm-dev
 
 chmod 777 chat_ids.txt
 chmod 777 *.png
 
 # Use pm2 to run the index.ts file
-sudo -H -u ubuntu bash -c 'pm2 start dist/index.js' 
+# sudo -H -u ubuntu bash -c 'pm2 start dist/index.js' 
 
   EOF
 }

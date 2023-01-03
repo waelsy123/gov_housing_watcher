@@ -1,8 +1,29 @@
 import * as puppeteer from "puppeteer";
 
+let browser;
+
 function sleep(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
+
+// const dummyData = {
+//   gender: "m",
+//   lastName: "Janski",
+//   firstName: "Ilan",
+//   title: "9",
+//   birthday: "02",
+//   birthmonth: "04",
+//   birthyear: "1995",
+//   street: "Salmovska",
+//   hausnr: "10",
+//   floor: "2",
+//   doornr: "14",
+//   zip: "12000",
+//   city: "Praha",
+//   phone: "00420535637284",
+//   email: "waelsy123@gmail.com"
+// }
+// const data = dummyData
 
 const data = {
   gender: "m",
@@ -22,95 +43,7 @@ const data = {
   email: "abodjarad12@gmail.com"
 }
 
-export const applyToHouse = async (url) => {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox']
-  });
-
-  const page = await browser.newPage();
-
-  await page.setViewport({
-    width: 1200,
-    height: 720,
-    deviceScaleFactor: 1,
-  });
-
-  await page.goto(url);
-
-  const gender = await page.$(
-    '[name="tx_wxsozialbau_altbau[contact][gender]"]'
-  );
-  gender.select(data.gender);
-
-  const last_name = await page.$(
-    '[name="tx_wxsozialbau_altbau[contact][last_name]"]'
-  );
-  await last_name.click();
-  await page.keyboard.type(data.lastName);
-
-  const first_name = await page.$(
-    '[name="tx_wxsozialbau_altbau[contact][first_name]"]'
-  );
-  await first_name.click();
-  await page.keyboard.type(data.firstName);
-
-  const title = await page.$('[name="tx_wxsozialbau_altbau[contact][title]"]');
-  title.select(data.title);
-
-  const birthday = await page.$(
-    '[name="tx_wxsozialbau_altbau[contact][birthday]"]'
-  );
-  birthday.select(data.birthday);
-
-  const birthmonth = await page.$(
-    '[name="tx_wxsozialbau_altbau[contact][birthmonth]"]'
-  );
-  birthmonth.select(data.birthmonth);
-
-  const birthyear = await page.$(
-    '[name="tx_wxsozialbau_altbau[contact][birthyear]"]'
-  );
-  await birthyear.select(data.birthyear);
-
-  const street = await page.$(
-    '[name="tx_wxsozialbau_altbau[contact][street]"]'
-  );
-  await street.click();
-  await page.keyboard.type(data.street);
-
-  const hausnr = await page.$(
-    '[name="tx_wxsozialbau_altbau[contact][hausnr]"]'
-  );
-  await hausnr.click();
-  await page.keyboard.type(data.hausnr);
-
-  // const floor = await page.$('[name="tx_wxsozialbau_altbau[contact][floor]"]');
-  // await floor.click();
-  // await page.keyboard.type(data.floor);
-
-  const doornr = await page.$(
-    '[name="tx_wxsozialbau_altbau[contact][doornr]"]'
-  );
-  await doornr.click();
-  await page.keyboard.type(data.doornr);
-
-  const zip = await page.$('[name="tx_wxsozialbau_altbau[contact][zip]"]');
-  await zip.click();
-  await page.keyboard.type(data.zip);
-
-  const city = await page.$('[name="tx_wxsozialbau_altbau[contact][city]"]');
-  await city.click();
-  await page.keyboard.type(data.city);
-
-  const phone = await page.$('[name="tx_wxsozialbau_altbau[contact][phone]"]');
-  await phone.click();
-  await page.keyboard.type(data.phone);
-
-  const email = await page.$('[name="tx_wxsozialbau_altbau[contact][email]"]');
-  await email.click();
-  await page.keyboard.type(data.email);
-
+const removeCookie = async (page) => {
   let div_selector_to_remove = "#CybotCookiebotDialog";
   await page.evaluate((sel) => {
     var elements = document.querySelectorAll(sel);
@@ -126,21 +59,167 @@ export const applyToHouse = async (url) => {
       elements[i].parentNode.removeChild(elements[i]);
     }
   }, div_selector_to_remove);
+}
 
-  await page.keyboard.press("Tab");
-  await page.keyboard.press("Tab");
-  await page.keyboard.press("Space");
+const selectOption = async (page, selectorStr, desiredValue, optionValue) => {
+  const element = await page.$(selectorStr);
+  element.select(desiredValue);
 
-  await street.type(data.street);
-  await hausnr.type(data.hausnr);
+  const value = await page.$eval(selectorStr, (el: any) => {
+    return el.selectedIndex
+  });
 
-  // await page.screenshot({ path: "before.png", fullPage: true });
+  if (value === 0) {
+    return await selectOption(page, selectorStr, desiredValue, optionValue)
+  }
+}
 
-  await page.keyboard.press("Enter");
 
-  await page.screenshot({ path: "after.png", fullPage: true });
+const setTextInput = async (page, selectorStr, value) => {
+  await page.$eval(selectorStr, (el, value) => { el.value = value }, value);
 
-  // await page.click('button[type="submit"]');
+  const result = await page.$eval(selectorStr, (el: any) => {
+    return el.value
+  });
 
-  await browser.close();
+  if (!result) {
+    return await setTextInput(page, selectorStr, value)
+  }
+}
+
+const setGender = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][gender]"]'
+  await selectOption(page, selectorStr, data.gender, 1)
+}
+
+const setLastName = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][last_name]"]'
+  await setTextInput(page, selectorStr, data.lastName)
+}
+
+const setfirstName = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][first_name]"]'
+  await setTextInput(page, selectorStr, data.firstName)
+}
+
+const setTitle = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][title]"]'
+  await selectOption(page, selectorStr, data.title, 1)
+}
+
+const setBirthday = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthday]"]'
+  await selectOption(page, selectorStr, data.birthday, 1)
+}
+
+const setBirthmonth = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthmonth]"]'
+  await selectOption(page, selectorStr, data.birthmonth, 1)
+}
+
+const setBirthyear = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthyear]"]'
+  await selectOption(page, selectorStr, data.birthyear, 1)
+}
+
+const setStreet = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][street]"]'
+  await setTextInput(page, selectorStr, data.street)
+}
+
+const setHausnr = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][hausnr]"]'
+  await setTextInput(page, selectorStr, data.hausnr)
+}
+
+const setDoornr = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][doornr]"]'
+  await setTextInput(page, selectorStr, data.doornr)
+}
+
+const setZip = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][zip]"]'
+  await setTextInput(page, selectorStr, data.zip)
+}
+
+const setCity = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][city]"]'
+  await setTextInput(page, selectorStr, data.city)
+}
+
+const setPhone = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][phone]"]'
+  await setTextInput(page, selectorStr, data.phone)
+}
+
+const setEmail = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][email]"]'
+  await setTextInput(page, selectorStr, data.email)
+}
+
+const check = async (page) => {
+  await page.$$eval('[name="tx_wxsozialbau_altbau[check]"]', elements => {
+    elements[1].click();
+  })
+
+  await sleep(30);
+
+  const done = await page.$$eval('[name="tx_wxsozialbau_altbau[check]"]', elements => {
+    return elements[1].checked
+  })
+
+  if (!done) {
+    await check(page)
+  }
+}
+
+export const applyToHouse = async (url) => {
+  if (!browser) { await launch() }
+
+  const page = await browser.newPage();
+
+  await page.setViewport({
+    width: 1200,
+    height: 720,
+    deviceScaleFactor: 1,
+  });
+
+  await page.goto(url);
+
+  await removeCookie(page)
+
+  await Promise.all([
+    setGender(page),
+    setLastName(page),
+    setfirstName(page),
+    setTitle(page),
+    setBirthday(page),
+    setBirthmonth(page),
+    setBirthyear(page),
+    setStreet(page),
+    setHausnr(page),
+    setDoornr(page),
+    setZip(page),
+    setCity(page),
+    setPhone(page),
+    setEmail(page),
+    check(page)
+  ])
+
+  const now = new Date().getTime();
+
+  await page.screenshot({ path: `${now}before.png`, fullPage: true });
+
+  await page.click('input[type="submit"]');
+
+  await page.screenshot({ path: `${now}after.png`, fullPage: true });
 };
+
+const launch = async () => {
+  browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox']
+  });
+}
+
+launch();
