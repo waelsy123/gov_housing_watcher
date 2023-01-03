@@ -25,10 +25,10 @@ npm install pm2 -g
 cd /home/ubuntu
 
 # Clone the repository containing the index.ts file
-git clone https://github.com/waelsy123/chatgpt.git
+git clone https://github.com/waelsy123/gov_housing_watcher.git
 
 # Install the required dependencies
-cd chatgpt
+cd gov_housing_watcher
 npm install --unsafe-perm
 npm run tsc
 
@@ -39,7 +39,7 @@ chmod 777 chat_ids.txt
 chmod 777 *.png
 
 # Use pm2 to run the index.ts file
-sudo -H -u ubuntu bash -c 'pm2 start dist/index.js' 
+# sudo -H -u ubuntu bash -c 'pm2 start dist/index.js' 
 
   EOF
 }

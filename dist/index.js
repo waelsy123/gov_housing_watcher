@@ -97,9 +97,9 @@ function main() {
     return __awaiter(this, void 0, void 0, function* () {
         // Previous value of the page source code
         const l = [...yield getListFromUrl(url)];
-        let previousList = new Set([...l].map(x => x.link));
+        let previousList = new Set([...l.slice(1, l.length)].map(x => x.link));
         // Create a cron job that runs every 5 seconds
-        cron.schedule("*/2 * * * * *", () => __awaiter(this, void 0, void 0, function* () {
+        cron.schedule("*/1 * * * * *", () => __awaiter(this, void 0, void 0, function* () {
             const currentList = yield getListFromUrl(url);
             let diff = [...currentList].filter((x) => !previousList.has(x.link));
             // Check if the current value is different from the previous value

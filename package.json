@@ -5,6 +5,7 @@
   "main": "test.js",
   "scripts": {
     "tsc": "tsc",
+    "start": "ts-node src/index.ts",
     "start:prod": "node dist/index.js"
   },
   "author": "",
