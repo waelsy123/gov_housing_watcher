@@ -7,6 +7,10 @@ resource "aws_instance" "sozialwatcher" {
   instance_type = "t2.micro"
   key_name      = "wasim-mac"
 
+  tags = {
+    Name = "abod"
+  }
+
   user_data = <<-EOF
 #!/bin/bash
 
