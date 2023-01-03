@@ -32,6 +32,7 @@ cd /home/ubuntu
 git clone https://github.com/waelsy123/gov_housing_watcher.git
 
 # Install the required dependencies
+sudo chmod 777 gov_housing_watcher
 cd gov_housing_watcher
 npm install --unsafe-perm
 npm run tsc
