@@ -26,39 +26,13 @@ function sleep(time) {
 // const data = dummyData
 
 const data = {
-  gender: "m",
-  lastName: "ALMATAR",
-  firstName: "Abdulla",
-  title: "9",
-  birthday: "01",
-  birthmonth: "01",
-  birthyear: "1991",
-  street: "Leystrasse",
-  hausnr: "4",
-  floor: "2",
-  doornr: "22b",
-  zip: "1200",
-  city: "Wien",
-  phone: "067761806959",
-  email: "abodjarad12@gmail.com"
-}
-
-const removeCookie = async (page) => {
-  let div_selector_to_remove = "#CybotCookiebotDialog";
-  await page.evaluate((sel) => {
-    var elements = document.querySelectorAll(sel);
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].parentNode.removeChild(elements[i]);
-    }
-  }, div_selector_to_remove);
-
-  div_selector_to_remove = ".navbar";
-  await page.evaluate((sel) => {
-    var elements = document.querySelectorAll(sel);
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].parentNode.removeChild(elements[i]);
-    }
-  }, div_selector_to_remove);
+  lastName: "Almattar",
+  firstName: "Wasim",
+  street: "Diesterwegstrasse 9c",
+  zip: "10405",
+  city: "Berlin",
+  phone: "00491783751508",
+  email: "wasim_3331@hotmail.com"
 }
 
 const selectOption = async (page, selectorStr, desiredValue, optionValue) => {
@@ -87,93 +61,120 @@ const setTextInput = async (page, selectorStr, value) => {
   }
 }
 
-const setGender = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][gender]"]'
-  await selectOption(page, selectorStr, data.gender, 1)
-}
+// const setGender = async (page) => {
+//   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][gender]"]'
+//   await selectOption(page, selectorStr, data.gender, 1)
+// }
 
 const setLastName = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][last_name]"]'
+  const selectorStr = '[name="tx_powermail_pi1[field][name]"]'
   await setTextInput(page, selectorStr, data.lastName)
 }
 
 const setfirstName = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][first_name]"]'
+  const selectorStr = '[name="tx_powermail_pi1[field][vorname]"]'
   await setTextInput(page, selectorStr, data.firstName)
 }
 
-const setTitle = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][title]"]'
-  await selectOption(page, selectorStr, data.title, 1)
-}
+// const setTitle = async (page) => {
+//   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][title]"]'
+//   await selectOption(page, selectorStr, data.title, 1)
+// }
 
-const setBirthday = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthday]"]'
-  await selectOption(page, selectorStr, data.birthday, 1)
-}
+// const setBirthday = async (page) => {
+//   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthday]"]'
+//   await selectOption(page, selectorStr, data.birthday, 1)
+// }
 
-const setBirthmonth = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthmonth]"]'
-  await selectOption(page, selectorStr, data.birthmonth, 1)
-}
+// const setBirthmonth = async (page) => {
+//   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthmonth]"]'
+//   await selectOption(page, selectorStr, data.birthmonth, 1)
+// }
 
-const setBirthyear = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthyear]"]'
-  await selectOption(page, selectorStr, data.birthyear, 1)
-}
+// const setBirthyear = async (page) => {
+//   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthyear]"]'
+//   await selectOption(page, selectorStr, data.birthyear, 1)
+// }
 
 const setStreet = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][street]"]'
+  const selectorStr = '[name="tx_powermail_pi1[field][strasse]"]'
   await setTextInput(page, selectorStr, data.street)
 }
 
-const setHausnr = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][hausnr]"]'
-  await setTextInput(page, selectorStr, data.hausnr)
-}
+// const setHausnr = async (page) => {
+//   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][hausnr]"]'
+//   await setTextInput(page, selectorStr, data.hausnr)
+// }
 
-const setDoornr = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][doornr]"]'
-  await setTextInput(page, selectorStr, data.doornr)
-}
+// const setDoornr = async (page) => {
+//   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][doornr]"]'
+//   await setTextInput(page, selectorStr, data.doornr)
+// }
 
 const setZip = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][zip]"]'
+  const selectorStr = '[name="tx_powermail_pi1[field][plz]"]'
   await setTextInput(page, selectorStr, data.zip)
 }
 
 const setCity = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][city]"]'
+  const selectorStr = '[name="tx_powermail_pi1[field][ort]"]'
   await setTextInput(page, selectorStr, data.city)
 }
 
 const setPhone = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][phone]"]'
+  const selectorStr = '[name="tx_powermail_pi1[field][telefon]"]'
   await setTextInput(page, selectorStr, data.phone)
 }
 
 const setEmail = async (page) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][email]"]'
+  const selectorStr = '[name="tx_powermail_pi1[field][e_mail]"]'
   await setTextInput(page, selectorStr, data.email)
 }
 
 const check = async (page) => {
-  await page.$$eval('[name="tx_wxsozialbau_altbau[check]"]', elements => {
-    elements[1].click();
+  // await page.$eval('div > div.checkbox > label', el => {
+  //   el.click();
+  // })
+
+  await page.$$eval('[id="powermail_field_datenschutzhinweis_1"]', elements => {
+    elements[0].checked = true
   })
 
-  await sleep(30);
-
-  const done = await page.$$eval('[name="tx_wxsozialbau_altbau[check]"]', elements => {
-    return elements[1].checked
+  const done = await page.$$eval('[id="powermail_field_datenschutzhinweis_1"]', elements => {
+    return elements[0].checked
   })
+
+  console.log("🚀 ~ file: applyToHouse.ts:150 ~ done ~ done", done)
 
   if (!done) {
     await check(page)
   }
 }
 
+
+const removeCookie = async (page) => {
+  try {
+    const aa = await page.click('.cookie-settings-submitall', { delay: 100 })
+    if (aa && aa.click) {
+      console.log("🚀 ~ file: applyToHouse.ts:163 ~ removeCookie ~ aa", aa)
+      aa.click()
+    }
+  } catch (e) {
+
+  }
+
+}
+
+const submit = async (page) => {
+  await page.$eval('.powermail_field button[type="submit"]', el => {
+    el.click()
+  })
+}
+
+
+
 export const applyToHouse = async (url) => {
+  console.log("🚀 ~ file: applyToHouse.ts:184 ~ applyToHouse ~ url", url)
   if (!browser) { await launch() }
 
   const page = await browser.newPage();
@@ -184,21 +185,24 @@ export const applyToHouse = async (url) => {
     deviceScaleFactor: 1,
   });
 
-  await page.goto(url);
+  await page.goto(url, {
+    waitUntil: "domcontentloaded",
+  });
 
   await removeCookie(page)
 
+
   await Promise.all([
-    setGender(page),
+    //   setGender(page),
     setLastName(page),
     setfirstName(page),
-    setTitle(page),
-    setBirthday(page),
-    setBirthmonth(page),
-    setBirthyear(page),
+    //   setTitle(page),
+    //   setBirthday(page),
+    //   setBirthmonth(page),
+    //   setBirthyear(page),
     setStreet(page),
-    setHausnr(page),
-    setDoornr(page),
+    // //   setHausnr(page),
+    // //   setDoornr(page),
     setZip(page),
     setCity(page),
     setPhone(page),
@@ -206,13 +210,18 @@ export const applyToHouse = async (url) => {
     check(page)
   ])
 
-  const now = new Date().getTime();
+  await removeCookie(page)
+  const before = new Date().getTime();
+  await page.screenshot({ path: `${before}before.png`, fullPage: true });
 
-  await page.screenshot({ path: `${now}before.png`, fullPage: true });
+  await submit(page)
 
-  await page.click('input[type="submit"]');
+  await sleep(1000)
+  await removeCookie(page)
+  await sleep(1000)
 
-  await page.screenshot({ path: `${now}after.png`, fullPage: true });
+  const after = new Date().getTime();
+  await page.screenshot({ path: `${after}after.png`, fullPage: true });
 };
 
 const launch = async () => {

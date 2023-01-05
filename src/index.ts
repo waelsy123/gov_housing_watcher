@@ -5,6 +5,7 @@ const cron = require("node-cron");
 
 import * as TelegramBot from "node-telegram-bot-api";
 import * as fs from "fs";
+import { applyToHouse } from "./applyToHouse";
 
 export const domain = 'https://www.wbm.de/'
 
@@ -39,13 +40,13 @@ async function registerToHouse(link: string) {
   // const adLink = domain + $(".tx-wx-sozialbau p a").first().attr('href');
   // console.log("🚀 ~ file: index.ts:38 ~ registerToHouse ~ adLink", adLink)
 
-  // applyToHouse(adLink);
+  applyToHouse(link);
 }
 
 // define a function to send "Bingo" to all stored chat IDs
 async function sendMessageToAllChats(diff: House[]) {
   for (const house of diff) {
-    // await registerToHouse(house.link);
+    await registerToHouse(house.link);
 
     for (const chatId of chatIds) {
       bot.sendMessage(chatId, house.text + '\n' + house.link);
@@ -62,17 +63,17 @@ function extractItems(html: string): Set<House> {
 
   // Add the text of each row to the Set, after trimming it
   items.each((i, item) => {
+    const text = $(item).text();
     const link = $(item).find('a').first().attr('href');
+
+    if (text.includes('WBS')) {
+      return
+    }
     if (!link) { return }
+
     const area = $(item).find('.category').text().trim();
     const address = $(item).find('.address').text().trim();
     const desc = $(item).find('.main-property-list').text().trim();
-    // let mitte = true;
-
-    // // const roomCount = Number($(item).find('td:eq(1)').text());
-    // if (area.includes('SPANDAU')) {
-    //   mitte = false;
-    // }
 
     list.add({ link: domain + link, text: `\n${area}\n${address}\n${desc}` })
   });
@@ -102,7 +103,7 @@ const url = "https://www.wbm.de/wohnungen-berlin/angebote-wbm/";
 
 async function main() {
   // Previous value of the page source code
-  const l = [] // [...await getListFromUrl(url)];
+  const l = [...await getListFromUrl(url)];
 
   let previousList = new Set([...l.slice(1, l.length)].map(x => x.link));
 
