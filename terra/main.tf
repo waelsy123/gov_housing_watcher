@@ -48,5 +48,9 @@ chmod 777 *.png
 # Use pm2 to run the index.ts file
 # sudo -H -u ubuntu bash -c 'pm2 start dist/index.js' 
 
+
+#  pm2 start /usr/bin/http-server --name my-file-server -- -p 80 -d
+#  sudo pm2 start /usr/bin/http-server --name my-file-server -- -p 80 -d
+
   EOF
 }

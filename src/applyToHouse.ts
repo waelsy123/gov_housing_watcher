@@ -172,7 +172,6 @@ const submit = async (page) => {
 }
 
 
-
 export const applyToHouse = async (url) => {
   console.log("🚀 ~ file: applyToHouse.ts:184 ~ applyToHouse ~ url", url)
   if (!browser) { await launch() }
