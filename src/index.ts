@@ -69,7 +69,7 @@ function extractTableRows(html: string): Set<House> {
     const link = $(row).find('a').first().attr('href');
     if (!link) { return }
     const roomCount = Number($(row).find('td:eq(1)').text());
-    if (roomCount !== 3) {
+    if (roomCount !== 4) {
       return
     }
     rowSet.add({ link: 'https://www.sozialbau.at' + link, text: $(row).text().trim() })

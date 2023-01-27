@@ -27,20 +27,20 @@ function sleep(time) {
 
 const data = {
   gender: "m",
-  lastName: "ALMATAR",
-  firstName: "Abdulla",
+  lastName: "Karahbi",
+  firstName: "Khalid",
   title: "9",
-  birthday: "01",
-  birthmonth: "01",
-  birthyear: "1991",
-  street: "Leystrasse",
-  hausnr: "4",
-  floor: "2",
-  doornr: "22b",
-  zip: "1200",
+  birthday: "14",
+  birthmonth: "05",
+  birthyear: "1981",
+  street: "Alxingergasse",
+  hausnr: "66",
+  floor: "5",
+  doornr: "14",
+  zip: "1100",
   city: "Wien",
-  phone: "067761806959",
-  email: "abodjarad12@gmail.com"
+  phone: "06607394855",
+  email: "khaledbasher@hotmail.com"
 }
 
 const removeCookie = async (page) => {
