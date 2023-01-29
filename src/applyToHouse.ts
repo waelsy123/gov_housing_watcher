@@ -6,29 +6,11 @@ function sleep(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
-// const dummyData = {
-//   gender: "m",
-//   lastName: "Janski",
-//   firstName: "Ilan",
-//   title: "9",
-//   birthday: "02",
-//   birthmonth: "04",
-//   birthyear: "1995",
-//   street: "Salmovska",
-//   hausnr: "10",
-//   floor: "2",
-//   doornr: "14",
-//   zip: "12000",
-//   city: "Praha",
-//   phone: "00420535637284",
-//   email: "waelsy123@gmail.com"
-// }
-// const data = dummyData
 
-const data = {
+let data = {
   gender: "m",
   lastName: "Karahbi",
-  firstName: "Khalid",
+  firstName: "Khaled",
   title: "9",
   birthday: "14",
   birthmonth: "05",
@@ -41,6 +23,28 @@ const data = {
   city: "Wien",
   phone: "06607394855",
   email: "khaledbasher@hotmail.com"
+}
+
+const dummyData = {
+  gender: "m",
+  lastName: "Janski",
+  firstName: "Ilan",
+  title: "9",
+  birthday: "02",
+  birthmonth: "04",
+  birthyear: "1995",
+  street: "Salmovska",
+  hausnr: "10",
+  floor: "2",
+  doornr: "14",
+  zip: "12000",
+  city: "Praha",
+  phone: "00420535637284",
+  email: "waelsy123@gmail.com"
+}
+
+if (process.env.NODE_ENV !== 'prod') {
+  data = dummyData;
 }
 
 const removeCookie = async (page) => {
@@ -137,6 +141,11 @@ const setDoornr = async (page) => {
   await setTextInput(page, selectorStr, data.doornr)
 }
 
+const setFloor = async (page) => {
+  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][floor]"]'
+  await setTextInput(page, selectorStr, data.floor)
+}
+
 const setZip = async (page) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][zip]"]'
   await setTextInput(page, selectorStr, data.zip)
@@ -198,6 +207,7 @@ export const applyToHouse = async (url) => {
     setBirthyear(page),
     setStreet(page),
     setHausnr(page),
+    setFloor(page),
     setDoornr(page),
     setZip(page),
     setCity(page),
