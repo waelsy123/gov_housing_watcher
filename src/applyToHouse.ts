@@ -22,7 +22,7 @@ let data = {
   zip: "1100",
   city: "Wien",
   phone: "06607394855",
-  email: "khaledbasher@hotmail.com"
+  email: "jhj@hotmail.com"
 }
 
 const dummyData = {
