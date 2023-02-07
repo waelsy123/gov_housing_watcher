@@ -27,12 +27,12 @@ function sleep(time) {
 
 const data = {
   lastName: "Almattar",
-  firstName: "Wasim",
+  firstName: "Mohamad",
   street: "Diesterwegstrasse 9c",
   zip: "10405",
   city: "Berlin",
   phone: "00491783751508",
-  email: "wasim_3331@hotmail.com"
+  email: "mhdwasimalmattar@gmail.com"
 }
 
 const selectOption = async (page, selectorStr, desiredValue, optionValue) => {
