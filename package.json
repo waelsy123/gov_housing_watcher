@@ -6,6 +6,7 @@
   "scripts": {
     "tsc": "tsc",
     "start": "ts-node src/index.ts",
+    "post": "ts-node src/post.ts",
     "start:prod": "node dist/index.js"
   },
   "author": "",

@@ -2,7 +2,7 @@ import * as puppeteer from "puppeteer";
 
 let browser;
 
-function sleep(time) {
+export function sleep(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
@@ -79,7 +79,9 @@ const selectOption = async (page, selectorStr, desiredValue, optionValue) => {
 }
 
 
-const setTextInput = async (page, selectorStr, value) => {
+export const setTextInput = async (page, selectorStr, value) => {
+  await page.waitForSelector(selectorStr);
+
   await page.$eval(selectorStr, (el, value) => { el.value = value }, value);
 
   const result = await page.$eval(selectorStr, (el: any) => {
@@ -89,6 +91,12 @@ const setTextInput = async (page, selectorStr, value) => {
   if (!result) {
     return await setTextInput(page, selectorStr, value)
   }
+}
+
+export const clickSomethingByClass = async (page, selectorStr) => {
+  await page.waitForSelector(selectorStr);
+
+  await page.click(`${selectorStr}:first-of-type`);
 }
 
 const setGender = async (page) => {
