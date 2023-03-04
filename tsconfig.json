@@ -1,9 +1,9 @@
 {
-    "compilerOptions": {
-      "target": "es6",
-      "module": "commonjs",
-      "outDir": "dist"
-    },
-    "include": ["src/*"],
-    "exclude": ["node_modules"]
-  }
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "dist"
+  },
+  "include": ["src/*", "src/aiCreator/deprecated/post.ts"],
+  "exclude": ["node_modules"]
+}

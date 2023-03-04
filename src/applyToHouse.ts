@@ -1,11 +1,7 @@
 import * as puppeteer from "puppeteer";
+import { sleep } from './lib/common'
 
 let browser;
-
-export function sleep(time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
-}
-
 
 let data = {
   gender: "m",
@@ -91,12 +87,6 @@ export const setTextInput = async (page, selectorStr, value) => {
   if (!result) {
     return await setTextInput(page, selectorStr, value)
   }
-}
-
-export const clickSomethingByClass = async (page, selectorStr) => {
-  await page.waitForSelector(selectorStr);
-
-  await page.click(`${selectorStr}:first-of-type`);
 }
 
 const setGender = async (page) => {
