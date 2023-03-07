@@ -1,8 +1,10 @@
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
+import express from 'express';
+import bodyParser from 'body-parser';
 import { config } from './lib/config';
 import { createTweet } from './aiCreator/twitter';
+import { askDallE, askGPT } from './providers/openai';
 import { createPost } from './aiCreator/coinmarketcap';
+import { scrapForContactsByString } from './scrapper/scrapper';
 
 const app = express()
 
@@ -11,6 +13,33 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', (req: express.Request, res: express.Response) => {
     res.send(`up@${config.version}`)
+})
+
+app.post('/scrapper/emails', async (req: express.Request, res: express.Response) => {
+    const { text } = req.body;
+    let result = {};
+    if (text) {
+        result = await scrapForContactsByString(text);
+    }
+    res.json({ success: true, payload: req.body, result })
+})
+
+app.post('/chatgpt', async (req: express.Request, res: express.Response) => {
+    const { text } = req.body;
+    let result = '';
+    if (text) {
+        result = await askGPT(text);
+    }
+    res.json({ success: true, payload: req.body, result })
+})
+
+app.post('/dalle', async (req: express.Request, res: express.Response) => {
+    const { text } = req.body;
+    let result = {};
+    if (text) {
+        result = await askDallE(text);
+    }
+    res.json({ success: true, payload: req.body, result })
 })
 
 app.post('/twitter/post', async (req: express.Request, res: express.Response) => {
