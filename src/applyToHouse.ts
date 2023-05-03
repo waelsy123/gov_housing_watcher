@@ -9,8 +9,8 @@ function sleep(time) {
 
 export let data = {
   gender: "m",
-  lastName: "abou koura",
-  firstName: "mhd alaaelddin",
+  lastName: "Abou Koura",
+  firstName: "Mhd Alaaelddin",
   title: "9",
   birthday: "29",
   birthmonth: "10",
@@ -21,7 +21,7 @@ export let data = {
   doornr: "02",
   zip: "1230",
   city: "Wien",
-  disered_room_number: 4,
+  disered_room_number: 3,
   token: "5294535870:AAHxIJbbWZ2UNf547bLvN8smG5cGcs9pYp8",
   phone: "06765883624",
   email: "alaaabukura@gmail.com"
