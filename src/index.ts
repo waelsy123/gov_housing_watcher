@@ -1,4 +1,4 @@
-import { applyToHouse } from './applyToHouse';
+import { applyToHouse, data } from './applyToHouse';
 const axios = require("axios");
 const cheerio = require("cheerio");
 const cron = require("node-cron");
@@ -7,7 +7,7 @@ import * as TelegramBot from "node-telegram-bot-api";
 import * as fs from "fs";
 
 // Create a Telegram bot
-const token = "5885795688:AAElkwJZiBfuVhEtno2ZdciD6pLQRKzC8Og";
+const token = data.token;
 const bot = new TelegramBot(token, { polling: true });
 
 // create a Set to store the chat IDs of incoming messages
@@ -69,7 +69,7 @@ function extractTableRows(html: string): Set<House> {
     const link = $(row).find('a').first().attr('href');
     if (!link) { return }
     const roomCount = Number($(row).find('td:eq(1)').text());
-    if (roomCount !== 4) {
+    if (roomCount !== data.disered_room_number) {
       return
     }
     rowSet.add({ link: 'https://www.sozialbau.at' + link, text: $(row).text().trim() })

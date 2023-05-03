@@ -7,7 +7,7 @@ function sleep(time) {
 }
 
 
-let data = {
+export let data = {
   gender: "m",
   lastName: "Karahbi",
   firstName: "Khaled",
@@ -22,6 +22,8 @@ let data = {
   zip: "1100",
   city: "Wien",
   phone: "06607394855",
+  disered_room_number: 4,
+  token: "5294535870:AAHxIJbbWZ2UNf547bLvN8smG5cGcs9pYp8",
   email: "khaledbasher@hotmail.com"
 }
 
@@ -40,6 +42,8 @@ const dummyData = {
   zip: "12000",
   city: "Praha",
   phone: "00420535637284",
+  disered_room_number: 4,
+  token: "5294535870:AAHxIJbbWZ2UNf547bLvN8smG5cGcs9pYp8",
   email: "waelsy123@gmail.com"
 }
 
