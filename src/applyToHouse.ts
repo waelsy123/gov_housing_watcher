@@ -9,20 +9,20 @@ function sleep(time) {
 
 let data = {
   gender: "m",
-  lastName: "Karahbi",
-  firstName: "Khaled",
+  lastName: "Hantouch",
+  firstName: "obaida",
   title: "9",
-  birthday: "14",
+  birthday: "11",
   birthmonth: "05",
-  birthyear: "1981",
-  street: "Alxingergasse",
-  hausnr: "66",
-  floor: "5",
-  doornr: "14",
-  zip: "1100",
+  birthyear: "1978",
+  street: "Stromstraße",
+  hausnr: "18-20",
+  floor: "7",
+  doornr: "12",
+  zip: "1200",
   city: "Wien",
-  phone: "06607394855",
-  email: "khaledbasher@hotmail.com"
+  phone: "06608118959",
+  email: "obaidahantouch730@gmail.com"
 }
 
 const dummyData = {
