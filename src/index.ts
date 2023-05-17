@@ -31,13 +31,29 @@ bot.on("message", (msg) => {
 });
 
 async function registerToHouse(link: string) {
-  const response = await axios.get(link);
-  const html = response.data;
-  const $ = cheerio.load(html);
-  const adLink = 'https://www.sozialbau.at' + $(".tx-wx-sozialbau p a").first().attr('href');
-  console.log("🚀 ~ file: index.ts:38 ~ registerToHouse ~ adLink", adLink)
+  let attempts = 0;
+  const maxAttempts = 5;
+  while (attempts < maxAttempts) {
+    try {
+      const response = await axios.get(link);
+      const html = response.data;
+      const $ = cheerio.load(html);
+      const adLink = 'https://www.sozialbau.at' + $(".tx-wx-sozialbau p a").first().attr('href');
+      console.log("🚀 ~ file: index.ts:38 ~ registerToHouse ~ adLink", adLink)
 
-  applyToHouse(adLink);
+      applyToHouse(adLink);
+      break;
+    } catch (error) {
+      attempts += 1;
+      console.error(`Attempt ${attempts} to register the house failed. Retrying in 10ms...`);
+      if (attempts === maxAttempts) {
+        for (const chatId of chatIds) {
+          bot.sendMessage(chatId, `Failed to register the house after ${attempts} attempts. Here's the link: ${link}`);
+        }
+      }
+      await new Promise(resolve => setTimeout(resolve, 10));
+    }
+  }
 }
 
 // define a function to send "Bingo" to all stored chat IDs
