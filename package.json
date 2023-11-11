@@ -5,8 +5,10 @@
   "main": "test.js",
   "scripts": {
     "tsc": "tsc",
-    "start": "ts-node src/index.ts",
-    "start:prod": "node dist/index.js"
+    "start:bau": "ts-node src/sozialbau/index.ts",
+    "start:wbm": "ts-node src/wbm/index.ts",
+    "start:bau:prod": "node dist/sozialbau/index.js",
+    "start:wbm:prod": "node dist/wbm/index.js"
   },
   "author": "",
   "license": "ISC",
