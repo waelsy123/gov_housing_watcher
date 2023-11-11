@@ -9,22 +9,22 @@ function sleep(time) {
 
 export let data = {
   gender: "m",
-  lastName: "Abou Koura",
-  firstName: "Mhd Alaaelddin",
+  lastName: "S A Zeedia",
+  firstName: "Haytham",
   title: "9",
-  birthday: "29",
-  birthmonth: "10",
-  birthyear: "1986",
-  street: "karl-schwed-gasse",
-  hausnr: "29-35",
-  floor: "4",
+  birthday: "01",
+  birthmonth: "03",
+  birthyear: "1987",
+  street: "Auhofstrasse",
+  hausnr: "15a",
+  floor: "2",
   doornr: "02",
-  zip: "1230",
+  zip: "1130",
   city: "Wien",
   disered_room_number: 3,
-  token: "5294535870:AAHxIJbbWZ2UNf547bLvN8smG5cGcs9pYp8",
-  phone: "06765883624",
-  email: "alaaabukura@gmail.com"
+  token: "5971305594:AAG4wXe0LFZiwXo0Q3HMy-p77irvF5Z7HKQ",
+  phone: "06608118959",
+  email: "obaidahantouch730@gmail.com"
 }
 
 const dummyData = {
