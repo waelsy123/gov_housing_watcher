@@ -7,50 +7,6 @@ function sleep(time) {
 }
 
 
-export let data = {
-  gender: "m",
-  lastName: "S A Zeedia",
-  firstName: "Haytham",
-  title: "9",
-  birthday: "01",
-  birthmonth: "03",
-  birthyear: "1987",
-  street: "Auhofstrasse",
-  hausnr: "15a",
-  floor: "2",
-  doornr: "02",
-  zip: "1130",
-  city: "Wien",
-  disered_room_number: 3,
-  token: "5971305594:AAG4wXe0LFZiwXo0Q3HMy-p77irvF5Z7HKQ",
-  phone: "06608118959",
-  email: "obaidahantouch730@gmail.com"
-}
-
-const dummyData = {
-  gender: "m",
-  lastName: "Janski",
-  firstName: "Ilan",
-  title: "9",
-  birthday: "02",
-  birthmonth: "04",
-  birthyear: "1995",
-  street: "Salmovska",
-  hausnr: "10",
-  floor: "2",
-  doornr: "14",
-  zip: "12000",
-  city: "Praha",
-  phone: "00420535637284",
-  disered_room_number: 4,
-  token: "5294535870:AAHxIJbbWZ2UNf547bLvN8smG5cGcs9pYp8",
-  email: "waelsy123@gmail.com"
-}
-
-if (process.env.NODE_ENV !== 'prod') {
-  data = dummyData;
-}
-
 const removeCookie = async (page) => {
   let div_selector_to_remove = "#CybotCookiebotDialog";
   await page.evaluate((sel) => {
@@ -95,82 +51,82 @@ const setTextInput = async (page, selectorStr, value) => {
   }
 }
 
-const setGender = async (page) => {
+const setGender = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][gender]"]'
   await selectOption(page, selectorStr, data.gender, 1)
 }
 
-const setLastName = async (page) => {
+const setLastName = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][last_name]"]'
   await setTextInput(page, selectorStr, data.lastName)
 }
 
-const setfirstName = async (page) => {
+const setfirstName = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][first_name]"]'
   await setTextInput(page, selectorStr, data.firstName)
 }
 
-const setTitle = async (page) => {
+const setTitle = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][title]"]'
   await selectOption(page, selectorStr, data.title, 1)
 }
 
-const setBirthday = async (page) => {
+const setBirthday = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthday]"]'
   await selectOption(page, selectorStr, data.birthday, 1)
 }
 
-const setBirthmonth = async (page) => {
+const setBirthmonth = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthmonth]"]'
   await selectOption(page, selectorStr, data.birthmonth, 1)
 }
 
-const setBirthyear = async (page) => {
+const setBirthyear = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthyear]"]'
   await selectOption(page, selectorStr, data.birthyear, 1)
 }
 
-const setStreet = async (page) => {
+const setStreet = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][street]"]'
   await setTextInput(page, selectorStr, data.street)
 }
 
-const setHausnr = async (page) => {
+const setHausnr = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][hausnr]"]'
   await setTextInput(page, selectorStr, data.hausnr)
 }
 
-const setDoornr = async (page) => {
+const setDoornr = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][doornr]"]'
   await setTextInput(page, selectorStr, data.doornr)
 }
 
-const setFloor = async (page) => {
+const setFloor = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][floor]"]'
   await setTextInput(page, selectorStr, data.floor)
 }
 
-const setZip = async (page) => {
+const setZip = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][zip]"]'
   await setTextInput(page, selectorStr, data.zip)
 }
 
-const setCity = async (page) => {
+const setCity = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][city]"]'
   await setTextInput(page, selectorStr, data.city)
 }
 
-const setPhone = async (page) => {
+const setPhone = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][phone]"]'
   await setTextInput(page, selectorStr, data.phone)
 }
 
-const setEmail = async (page) => {
+const setEmail = async (page, data) => {
   const selectorStr = '[name="tx_wxsozialbau_altbau[contact][email]"]'
   await setTextInput(page, selectorStr, data.email)
 }
 
-const check = async (page) => {
+const check = async (page, data) => {
   await page.$$eval('[name="tx_wxsozialbau_altbau[check]"]', elements => {
     elements[1].click();
   })
@@ -182,11 +138,13 @@ const check = async (page) => {
   })
 
   if (!done) {
-    await check(page)
+    await check(page, data)
   }
 }
 
-export const applyToHouse = async (url) => {
+export const applyToHouse = async (url, user) => {
+  const data = user;
+
   if (!browser) { await launch() }
 
   const page = await browser.newPage();
@@ -198,35 +156,35 @@ export const applyToHouse = async (url) => {
   });
 
   await page.goto(url);
+  console.log("🚀 ~ file: sozialBau.ts:159 ~ applyToHouse ~ url:", url)
 
   await removeCookie(page)
 
   await Promise.all([
-    setGender(page),
-    setLastName(page),
-    setfirstName(page),
-    setTitle(page),
-    setBirthday(page),
-    setBirthmonth(page),
-    setBirthyear(page),
-    setStreet(page),
-    setHausnr(page),
-    setFloor(page),
-    setDoornr(page),
-    setZip(page),
-    setCity(page),
-    setPhone(page),
-    setEmail(page),
-    check(page)
+    setGender(page, data),
+    setLastName(page, data),
+    setfirstName(page, data),
+    setTitle(page, data),
+    setBirthday(page, data),
+    setBirthmonth(page, data),
+    setBirthyear(page, data),
+    setStreet(page, data),
+    setHausnr(page, data),
+    setFloor(page, data),
+    setDoornr(page, data),
+    setZip(page, data),
+    setCity(page, data),
+    setPhone(page, data),
+    setEmail(page, data),
+    check(page, data)
   ])
 
   const now = new Date().getTime();
-
-  await page.screenshot({ path: `${now}before.png`, fullPage: true });
+  await page.screenshot({ path: `${user.firstName}.${now}before.png`, fullPage: true });
 
   await page.click('input[type="submit"]');
 
-  await page.screenshot({ path: `${now}after.png`, fullPage: true });
+  await page.screenshot({ path: `${user.firstName}.${now}after.png`, fullPage: true });
 };
 
 const launch = async () => {
