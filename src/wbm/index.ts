@@ -1,4 +1,4 @@
-import { applyToHouse as applySozialBau } from './sozialBau';
+// import { applyToHouse as applyWBM } from './wbm';
 const axios = require("axios");
 const cheerio = require("cheerio");
 const cron = require("node-cron");
@@ -6,6 +6,7 @@ const cron = require("node-cron");
 import * as TelegramBot from "node-telegram-bot-api";
 import * as fs from "fs";
 import { User, token, users } from './data';
+export const domain = 'https://www.wbm.de/'
 
 // Create a Telegram bot
 const bot = new TelegramBot(token, { polling: true });
@@ -26,38 +27,12 @@ bot.on("message", (msg) => {
   bot.sendMessage(msg.chat.id, "I am alive!");
   chatIds.add(msg.chat.id);
 
-  // write the updated set of chat IDs to the file
   fs.writeFileSync("chat_ids.txt", Array.from(chatIds).join("\n"));
 });
 
 async function registerToHouse(house: House, user: User) {
-  const link = house.link;
-
-  let attempts = 0;
-  const maxAttempts = 5;
-  while (attempts < maxAttempts) {
-    try {
-      const response = await axios.get(link);
-      const html = response.data;
-      const $ = cheerio.load(html);
-      const adLink = 'https://www.sozialbau.at' + $(".tx-wx-sozialbau p a").first().attr('href');
-      console.log("🚀 ~ file: index.ts:38 ~ registerToHouse ~ adLink", adLink)
-
-      applySozialBau(adLink, user);
-      break;
-    } catch (error) {
-      attempts += 1;
-      console.error(`Attempt ${attempts} to register the house failed. Retrying in 10ms...`);
-      if (attempts === maxAttempts) {
-        for (const chatId of chatIds) {
-          bot.sendMessage(chatId, `Failed to register the house after ${attempts} attempts. Here's the link: ${link}`);
-        }
-      }
-      await new Promise(resolve => setTimeout(resolve, 10));
-    }
-  }
+  // applyToHouse(link);
 }
-
 
 // define a function to send "Bingo" to all stored chat IDs
 async function sendMessageToAllThenApply(diff: House[]) {
@@ -68,7 +43,10 @@ async function sendMessageToAllThenApply(diff: House[]) {
     // for every house search for a fit user
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
-      if (user.desired_room_number === house.roomCount) {
+      if (
+        user.desired_room_number === house.roomCount &&
+        user.wbs === house.wbs
+      ) {
         await registerToHouse(house, user);
 
         for (const chatId of chatIds) {
@@ -79,38 +57,67 @@ async function sendMessageToAllThenApply(diff: House[]) {
   }
 }
 
-function extractTableRows(html: string): Set<House> {
+function extractItems(html: string): Set<House> {
   // Use cheerio to parse the HTML and get the first table element
   const $ = cheerio.load(html);
-  const table = $("table").first();
+  const items = $('.openimmo-search-list-item')
 
-  // Get all rows from the table
-  const rows = table.find("tr");
-
-  // Create a Set to store the rows
-  const rowSet: Set<any> = new Set();
+  let list: Set<House> = new Set()
 
   // Add the text of each row to the Set, after trimming it
-  rows.each((i, row) => {
-    const link = $(row).find('a').first().attr('href');
-    if (!link) { return }
-    const roomCount = Number($(row).find('td:eq(1)').text());
+  items.each((i, item) => {
+    const text = $(item).text();
+    const link = $(item).find('a').first().attr('href');
+    let wbs = false;
 
-    rowSet.add({
-      link: 'https://www.sozialbau.at' + link,
-      text: $(row).text().trim(),
+    if (text.includes('WBS')) {
+      wbs = true
+    }
+    if (!link) { return }
+
+    const area = $(item).find('.category').text().trim();
+    const address = $(item).find('.address').text().trim();
+    const desc = $(item).find('.main-property-list').text().trim();
+
+    let roomCount = 0;
+    if (desc.includes('Zimmer:1')) {
+      roomCount = 1
+    } else if (desc.includes('Zimmer:2')) {
+      roomCount = 2
+    } else if (desc.includes('Zimmer:3')) {
+      roomCount = 3
+    } else if (desc.includes('Zimmer:4')) {
+      roomCount = 4
+    } else if (desc.includes('Zimmer:5')) {
+      roomCount = 5
+    } else if (desc.includes('Zimmer:6')) {
+      roomCount = 6
+    } else if (desc.includes('Zimmer:7')) {
+      roomCount = 7
+    } else if (desc.includes('Zimmer:8')) {
+      roomCount = 8
+    } else if (desc.includes('Zimmer:9')) {
+      roomCount = 9
+    }
+
+    list.add({
+      link: domain + link,
+      text: `\n${area}\n${address}\n${desc}`,
+      wbs,
+      area,
       roomCount
     })
   });
 
-  // Return the Set of rows
-  return rowSet;
+  return list;
 }
 
 interface House {
-  link?: string
+  link: string
   text: string
   roomCount: number
+  wbs: boolean
+  area: string
 }
 async function getListFromUrl(url: string): Promise<Set<House>> {
   // Use axios to fetch the HTML source code from the URL
@@ -118,25 +125,25 @@ async function getListFromUrl(url: string): Promise<Set<House>> {
   const html = response.data;
 
   // Extract the rows of the first table element
-  const rows = extractTableRows(html);
+  const rows = extractItems(html);
 
   // Return the Set of rows
   return rows;
 }
 
 // URL of the webpage
-const url = "https://sozialbau.at/angebot/sofort-verfuegbar/";
+const url = "https://www.wbm.de/wohnungen-berlin/angebote";
 
 async function main() {
   // Previous value of the page source code
   const l = [...await getListFromUrl(url)];
 
   let previousList = new Set([...l.slice(1, l.length)].map(x => x.link));
-  // let previousList = new Set([])
 
   // Create a cron job that runs every 5 seconds
   cron.schedule("*/1 * * * * *", async () => {
     const currentList = await getListFromUrl(url);
+    console.log("🚀 ~ file: index.ts:113 ~ cron.schedule ~ currentList:", currentList)
     let diff = [...currentList].filter((x) => !previousList.has(x.link));
 
     // Check if the current value is different from the previous value

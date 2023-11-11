@@ -1,5 +1,24 @@
 
-export let users = [{
+export interface User {
+    gender: string;
+    lastName: string;
+    firstName: string;
+    title: string;
+    birthday: string;
+    birthmonth: string;
+    birthyear: string;
+    street: string;
+    hausnr: string;
+    floor: string;
+    doornr: string;
+    zip: string;
+    city: string;
+    desired_room_number: number;
+    phone: string;
+    email: string;
+}
+
+export let users: User[] = [{
     gender: "m",
     lastName: "S A Zeedia",
     firstName: "Haytham",
@@ -13,7 +32,7 @@ export let users = [{
     doornr: "01",
     zip: "1130",
     city: "Wien",
-    disered_room_number: 3,
+    desired_room_number: 3,
     phone: "06608118959",
     email: "obaidahantouch730@gmail.com"
 },
@@ -31,7 +50,7 @@ export let users = [{
     doornr: "19",
     zip: "1030",
     city: "Wien",
-    disered_room_number: 4,
+    desired_room_number: 4,
     phone: "06608118959",
     email: "obaidahantouch730@gmail.com"
 }]
@@ -51,7 +70,7 @@ const dummyUsers = [{
     zip: "12000",
     city: "Praha",
     phone: "00420535637284",
-    disered_room_number: 1,
+    desired_room_number: 1,
     email: "waelsy123@gmail.com"
 }, {
     gender: "m",
@@ -68,7 +87,7 @@ const dummyUsers = [{
     zip: "12000",
     city: "Praha",
     phone: "00420535637284",
-    disered_room_number: 2,
+    desired_room_number: 2,
     email: "waelsy123+mike@gmail.com"
 }]
 

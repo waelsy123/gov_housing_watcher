@@ -1,54 +1,12 @@
 import * as puppeteer from "puppeteer";
+import { removeElement, selectOption, setTextInput, sleep } from "../common/common"
+import { User } from "./data";
 
 let browser;
 
-function sleep(time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
-}
-
-
 const removeCookie = async (page) => {
-  let div_selector_to_remove = "#CybotCookiebotDialog";
-  await page.evaluate((sel) => {
-    var elements = document.querySelectorAll(sel);
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].parentNode.removeChild(elements[i]);
-    }
-  }, div_selector_to_remove);
-
-  div_selector_to_remove = ".navbar";
-  await page.evaluate((sel) => {
-    var elements = document.querySelectorAll(sel);
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].parentNode.removeChild(elements[i]);
-    }
-  }, div_selector_to_remove);
-}
-
-const selectOption = async (page, selectorStr, desiredValue, optionValue) => {
-  const element = await page.$(selectorStr);
-  element.select(desiredValue);
-
-  const value = await page.$eval(selectorStr, (el: any) => {
-    return el.selectedIndex
-  });
-
-  if (value === 0) {
-    return await selectOption(page, selectorStr, desiredValue, optionValue)
-  }
-}
-
-
-const setTextInput = async (page, selectorStr, value) => {
-  await page.$eval(selectorStr, (el, value) => { el.value = value }, value);
-
-  const result = await page.$eval(selectorStr, (el: any) => {
-    return el.value
-  });
-
-  if (!result) {
-    return await setTextInput(page, selectorStr, value)
-  }
+  removeElement(page, "#CybotCookiebotDialog");
+  removeElement(page, ".navbar");
 }
 
 const setGender = async (page, data) => {
@@ -142,7 +100,7 @@ const check = async (page, data) => {
   }
 }
 
-export const applyToHouse = async (url, user) => {
+export const applyToHouse = async (url, user: User) => {
   const data = user;
 
   if (!browser) { await launch() }
