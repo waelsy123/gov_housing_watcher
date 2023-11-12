@@ -137,9 +137,8 @@ async function main() {
   let previousList = new Set([...l.slice(1, l.length)].map(x => x.link));
 
   // Create a cron job that runs every 5 seconds
-  cron.schedule("*/1 * * * * *", async () => {
+  cron.schedule("*/3 * * * * *", async () => {
     const currentList = await getListFromUrl(url);
-    console.log("🚀 ~ file: index.ts:113 ~ cron.schedule ~ currentList:", currentList)
     let diff = [...currentList].filter((x) => !previousList.has(x.link));
 
     // Check if the current value is different from the previous value
