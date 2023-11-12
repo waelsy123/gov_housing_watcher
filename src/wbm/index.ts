@@ -34,28 +34,23 @@ async function registerToHouse(house: House, user: User) {
   // applyToHouse(link);
 }
 
-// define a function to send "Bingo" to all stored chat IDs
-async function sendMessageToAllThenApply(diff: House[]) {
-  console.log("🚀 ~ file: index.ts:45 ~ sendMessageToAllChats ~ length", diff.length)
+
+
+// Function to send details of each house to all stored chat IDs
+async function sendMessageToAllThenApply(diff: House[]): Promise<void> {
+  console.log("Processing", diff.length, "houses...");
 
   for (const house of diff) {
-    console.log("🚀 ~ file: index.ts:67 ~ sendMessageToAllThenApply ~ house:", house)
-    // for every house search for a fit user
-    // for (let i = 0; i < users.length; i++) {
-    //   const user = users[i];
-    //   if (
-    //     user.desired_room_number === house.roomCount &&
-    //     user.wbs === house.wbs
-    //   ) {
+    console.log("Sending details for house:", house);
 
-    // await registerToHouse(house, user);
+    // Construct the message with all house details
+    const message = `House Details:\n- ${house.text}\n- Link: ${house.link}\n- Room Count: ${house.roomCount}\n- WBS: ${house.wbs ? 'Yes' : 'No'}\n- Area: ${house.area}`;
 
+    // Send the constructed message to each chat ID
     for (const chatId of chatIds) {
-      bot.sendMessage(chatId, house.text + '\n' + house.link);
+      await bot.sendMessage(chatId, message);
     }
-    // }
   }
-}
 }
 
 function extractItems(html: string): Set<House> {
