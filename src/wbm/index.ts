@@ -41,20 +41,21 @@ async function sendMessageToAllThenApply(diff: House[]) {
   for (const house of diff) {
     console.log("🚀 ~ file: index.ts:67 ~ sendMessageToAllThenApply ~ house:", house)
     // for every house search for a fit user
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i];
-      if (
-        user.desired_room_number === house.roomCount &&
-        user.wbs === house.wbs
-      ) {
-        await registerToHouse(house, user);
+    // for (let i = 0; i < users.length; i++) {
+    //   const user = users[i];
+    //   if (
+    //     user.desired_room_number === house.roomCount &&
+    //     user.wbs === house.wbs
+    //   ) {
 
-        for (const chatId of chatIds) {
-          bot.sendMessage(chatId, user.firstName + '\n' + house.text + '\n' + house.link);
-        }
-      }
+    // await registerToHouse(house, user);
+
+    for (const chatId of chatIds) {
+      bot.sendMessage(chatId, house.text + '\n' + house.link);
     }
+    // }
   }
+}
 }
 
 function extractItems(html: string): Set<House> {
