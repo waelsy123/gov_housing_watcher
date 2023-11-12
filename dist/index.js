@@ -9,15 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const applyToHouse_1 = require("./applyToHouse");
+const sozialBau_1 = require("./sozialBau");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const cron = require("node-cron");
 const TelegramBot = require("node-telegram-bot-api");
 const fs = require("fs");
+const data_1 = require("./data");
 // Create a Telegram bot
-const token = "5885795688:AAElkwJZiBfuVhEtno2ZdciD6pLQRKzC8Og";
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(data_1.token, { polling: true });
 // create a Set to store the chat IDs of incoming messages
 let chatIds = new Set();
 // try to read the contents of the file and use it to initialize the chatIds set
@@ -35,24 +35,49 @@ bot.on("message", (msg) => {
     // write the updated set of chat IDs to the file
     fs.writeFileSync("chat_ids.txt", Array.from(chatIds).join("\n"));
 });
-function registerToHouse(link) {
+function registerToHouse(house, user) {
     return __awaiter(this, void 0, void 0, function* () {
-        const response = yield axios.get(link);
-        const html = response.data;
-        const $ = cheerio.load(html);
-        const adLink = 'https://www.sozialbau.at' + $(".tx-wx-sozialbau p a").first().attr('href');
-        console.log("🚀 ~ file: index.ts:38 ~ registerToHouse ~ adLink", adLink);
-        (0, applyToHouse_1.applyToHouse)(adLink);
+        const link = house.link;
+        let attempts = 0;
+        const maxAttempts = 5;
+        while (attempts < maxAttempts) {
+            try {
+                const response = yield axios.get(link);
+                const html = response.data;
+                const $ = cheerio.load(html);
+                const adLink = 'https://www.sozialbau.at' + $(".tx-wx-sozialbau p a").first().attr('href');
+                console.log("🚀 ~ file: index.ts:38 ~ registerToHouse ~ adLink", adLink);
+                (0, sozialBau_1.applyToHouse)(adLink, user);
+                break;
+            }
+            catch (error) {
+                attempts += 1;
+                console.error(`Attempt ${attempts} to register the house failed. Retrying in 10ms...`);
+                if (attempts === maxAttempts) {
+                    for (const chatId of chatIds) {
+                        bot.sendMessage(chatId, `Failed to register the house after ${attempts} attempts. Here's the link: ${link}`);
+                    }
+                }
+                yield new Promise(resolve => setTimeout(resolve, 10));
+            }
+        }
     });
 }
 // define a function to send "Bingo" to all stored chat IDs
-function sendMessageToAllChats(diff) {
+function sendMessageToAllThenApply(diff) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("🚀 ~ file: index.ts:45 ~ sendMessageToAllChats ~ length", diff.length);
         for (const house of diff) {
-            yield registerToHouse(house.link);
-            for (const chatId of chatIds) {
-                bot.sendMessage(chatId, house.text + '\n' + house.link);
+            console.log("🚀 ~ file: index.ts:67 ~ sendMessageToAllThenApply ~ house:", house);
+            // for every house search for a fit user
+            for (let i = 0; i < data_1.users.length; i++) {
+                const user = data_1.users[i];
+                if (user.disered_room_number === house.roomCount) {
+                    yield registerToHouse(house, user);
+                    for (const chatId of chatIds) {
+                        bot.sendMessage(chatId, user.firstName + '\n' + house.text + '\n' + house.link);
+                    }
+                }
             }
         }
     });
@@ -72,10 +97,11 @@ function extractTableRows(html) {
             return;
         }
         const roomCount = Number($(row).find('td:eq(1)').text());
-        if (roomCount !== 3) {
-            return;
-        }
-        rowSet.add({ link: 'https://www.sozialbau.at' + link, text: $(row).text().trim() });
+        rowSet.add({
+            link: 'https://www.sozialbau.at' + link,
+            text: $(row).text().trim(),
+            roomCount
+        });
     });
     // Return the Set of rows
     return rowSet;
@@ -98,13 +124,14 @@ function main() {
         // Previous value of the page source code
         const l = [...yield getListFromUrl(url)];
         let previousList = new Set([...l.slice(1, l.length)].map(x => x.link));
+        // let previousList = new Set([])
         // Create a cron job that runs every 5 seconds
         cron.schedule("*/1 * * * * *", () => __awaiter(this, void 0, void 0, function* () {
             const currentList = yield getListFromUrl(url);
             let diff = [...currentList].filter((x) => !previousList.has(x.link));
             // Check if the current value is different from the previous value
             if (diff && diff.length) {
-                sendMessageToAllChats(diff);
+                sendMessageToAllThenApply(diff);
                 previousList = new Set([...currentList].map(x => x.link));
             }
         }));
