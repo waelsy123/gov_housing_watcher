@@ -1,94 +1,64 @@
 
 export interface User {
-    gender: string;
-    lastName: string;
-    firstName: string;
-    title: string;
-    birthday: string;
-    birthmonth: string;
-    birthyear: string;
-    street: string;
-    hausnr: string;
-    floor: string;
-    doornr: string;
-    zip: string;
-    city: string;
-    desired_room_number: number;
-    phone: string;
+    applicantMessage: string;
     email: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    salutation: string;
+    street: string;
+    houseNumber: string;
+    zipCode: string;
+    city: string;
+    additionalAddressInformation: string;
+    gewobag_gesamtzahl_der_einziehenden_personen_erwachsene_und_kinder: string;
+    min_room_number: number;
+    max_room_number: number;
+    max_price: number;
+    wbs: boolean
 }
 
-export let users: User[] = [{
-    gender: "m",
-    lastName: "S A Zeedia",
-    firstName: "Haytham",
-    title: "t9",
-    birthday: "01",
-    birthmonth: "03",
-    birthyear: "1987",
-    street: "Auhofstrasse",
-    hausnr: "15a",
-    floor: "0",
-    doornr: "01",
-    zip: "1130",
-    city: "Wien",
-    desired_room_number: 3,
-    phone: "06608118959",
-    email: "obaidahantouch730@gmail.com"
-},
-{
-    gender: "m",
-    lastName: "Booz",
-    firstName: "Bashar",
-    title: "t9",
-    birthday: "01",
-    birthmonth: "01",
-    birthyear: "1982",
-    street: "Gestettengasse",
-    hausnr: "16",
-    floor: "6",
-    doornr: "19",
-    zip: "1030",
-    city: "Wien",
-    desired_room_number: 4,
-    phone: "06608118959",
-    email: "obaidahantouch730@gmail.com"
-}]
+// // -------  Edit list of users --------  /// 
+
+export let users: User[] = [
+    {
+        applicantMessage: "dzien dobry, jes aktualny?",
+        email: "waelsy123+1@gmail.com",
+        firstName: "Michal",
+        lastName: "Nowak",
+        phoneNumber: "537884031",
+        salutation: "MR",
+        street: "Emilii Plater",
+        houseNumber: "28",
+        zipCode: "02625",
+        city: "Poznan",
+        additionalAddressInformation: "nic nie ma",
+        gewobag_gesamtzahl_der_einziehenden_personen_erwachsene_und_kinder: "6",
+        min_room_number: 4,
+        max_room_number: 6,
+        max_price: 1100,
+        wbs: false
+    }]
+
+// // -------  END list of users --------  /// 
 
 const dummyUsers = [{
-    gender: "m",
-    lastName: "Janski",
-    firstName: "Sam",
-    title: "t9",
-    birthday: "02",
-    birthmonth: "04",
-    birthyear: "1995",
-    street: "Salmovska",
-    hausnr: "10",
-    floor: "2",
-    doornr: "14",
-    zip: "12000",
-    city: "Praha",
-    phone: "00420535637284",
-    desired_room_number: 1,
-    email: "waelsy123@gmail.com"
-}, {
-    gender: "m",
-    lastName: "Tyson",
-    firstName: "Mike",
-    title: "t9",
-    birthday: "02",
-    birthmonth: "04",
-    birthyear: "1995",
-    street: "Salmovska",
-    hausnr: "10",
-    floor: "2",
-    doornr: "14",
-    zip: "12000",
-    city: "Praha",
-    phone: "00420535637284",
-    desired_room_number: 2,
-    email: "waelsy123+mike@gmail.com"
+    applicantMessage: "dzien dobry, jes aktualny?",
+    email: "waelsy123+04@gmail.com",
+    firstName: "Michal",
+    lastName: "Nowak",
+    phoneNumber: "537884031",
+    salutation: "MR",
+    street: "Emilii Plater",
+    houseNumber: "28",
+    zipCode: "02625",
+    city: "Poznan",
+    additionalAddressInformation: "nic nie ma",
+    gewobag_gesamtzahl_der_einziehenden_personen_erwachsene_und_kinder: "6",
+    min_room_number: 4,
+    max_room_number: 6,
+    max_price: 2100,
+    wbs: false
 }]
 
 if (process.env.NODE_ENV !== 'prod') {

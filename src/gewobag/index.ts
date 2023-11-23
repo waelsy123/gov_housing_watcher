@@ -1,4 +1,4 @@
-import { applyToHouse as applySozialBau } from './gewobag';
+import { applyToHouse } from './gewobag';
 const axios = require("axios");
 const cheerio = require("cheerio");
 const cron = require("node-cron");
@@ -43,7 +43,7 @@ async function registerToHouse(house: House, user: User) {
       const adLink = 'https://www.sozialbau.at' + $(".tx-wx-sozialbau p a").first().attr('href');
       console.log("🚀 ~ file: index.ts:38 ~ registerToHouse ~ adLink", adLink)
 
-      applySozialBau(adLink, user);
+      applyToHouse(adLink, user);
       break;
     } catch (error) {
       attempts += 1;
@@ -66,6 +66,20 @@ async function sendMessageToAllThenApply(diff: House[]) {
       continue
     }
 
+    let appliers = '';
+
+    for (const user of users) {
+      // Check if the house matches the user's preferences
+      if (
+        house.roomCount >= user.min_room_number &&
+        house.roomCount <= user.max_room_number &&
+        house.price <= user.max_price &&
+        house.wbs === user.wbs
+      ) {
+        await applyToHouse(house.link, user);
+        appliers += ` ${user.firstName} |`;
+      }
+    }
     console.log("🚀 ~ file: index.ts:67 ~ sendMessageToAllThenApply ~ house:", house)
 
     for (const chatId of chatIds) {
@@ -98,6 +112,7 @@ async function sendMessageToAllThenApply(diff: House[]) {
         message += `💰 *Price:* €${house.price.toFixed(2)}\n`;
       }
 
+      message += `🚀 *Applied for:* ${appliers}\n`;
       message += `🔑 *WBS Required:* ${house.wbs ? 'Yes' : 'No'}\n`;
 
       bot.sendMessage(chatId, message, { parse_mode: 'Markdown', disable_web_page_preview: true });

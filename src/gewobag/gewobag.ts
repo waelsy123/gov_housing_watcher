@@ -1,155 +1,66 @@
-import * as puppeteer from "puppeteer";
-import { removeElement, selectOption, setTextInput, sleep } from "../common/common"
-import { User } from "./data";
-
-let browser;
-
-const removeCookie = async (page) => {
-  removeElement(page, "#CybotCookiebotDialog");
-  removeElement(page, ".navbar");
-}
-
-const setGender = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][gender]"]'
-  await selectOption(page, selectorStr, data.gender, 1)
-}
-
-const setLastName = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][last_name]"]'
-  await setTextInput(page, selectorStr, data.lastName)
-}
-
-const setfirstName = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][first_name]"]'
-  await setTextInput(page, selectorStr, data.firstName)
-}
-
-const setTitle = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][title]"]'
-  await selectOption(page, selectorStr, data.title, 1)
-}
-
-const setBirthday = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthday]"]'
-  await selectOption(page, selectorStr, data.birthday, 1)
-}
-
-const setBirthmonth = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthmonth]"]'
-  await selectOption(page, selectorStr, data.birthmonth, 1)
-}
-
-const setBirthyear = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][birthyear]"]'
-  await selectOption(page, selectorStr, data.birthyear, 1)
-}
-
-const setStreet = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][street]"]'
-  await setTextInput(page, selectorStr, data.street)
-}
-
-const setHausnr = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][hausnr]"]'
-  await setTextInput(page, selectorStr, data.hausnr)
-}
-
-const setDoornr = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][doornr]"]'
-  await setTextInput(page, selectorStr, data.doornr)
-}
-
-const setFloor = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][floor]"]'
-  await setTextInput(page, selectorStr, data.floor)
-}
-
-const setZip = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][zip]"]'
-  await setTextInput(page, selectorStr, data.zip)
-}
-
-const setCity = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][city]"]'
-  await setTextInput(page, selectorStr, data.city)
-}
-
-const setPhone = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][phone]"]'
-  await setTextInput(page, selectorStr, data.phone)
-}
-
-const setEmail = async (page, data) => {
-  const selectorStr = '[name="tx_wxsozialbau_altbau[contact][email]"]'
-  await setTextInput(page, selectorStr, data.email)
-}
-
-const check = async (page, data) => {
-  await page.$$eval('[name="tx_wxsozialbau_altbau[check]"]', elements => {
-    elements[1].click();
-  })
-
-  await sleep(30);
-
-  const done = await page.$$eval('[name="tx_wxsozialbau_altbau[check]"]', elements => {
-    return elements[1].checked
-  })
-
-  if (!done) {
-    await check(page, data)
-  }
-}
+import axios from 'axios';
+const cheerio = require("cheerio");
+import { User } from './data';
 
 export const applyToHouse = async (url, user: User) => {
-  const data = user;
+  const response = await axios.get(url);
+  const html = response.data;
 
-  if (!browser) { await launch() }
+  // Load the HTML into cheerio
+  const $ = cheerio.load(html);
 
-  const page = await browser.newPage();
+  // Select the iframe element and get its 'src' attribute
+  const iframeUrl = $('#contact-iframe').attr('src');
 
-  await page.setViewport({
-    width: 1200,
-    height: 720,
-    deviceScaleFactor: 1,
-  });
+  console.log("🚀 ~ file: gewobag.ts:16 ~ applyToHouse ~ iframeUrl:", iframeUrl)
 
-  await page.goto(url);
-  console.log("🚀 ~ file: sozialBau.ts:159 ~ applyToHouse ~ url:", url)
 
-  await removeCookie(page)
+  const data = {
+    publicApplicationCreationTO: {
+      applicantMessage: user.applicantMessage,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phoneNumber: user.phoneNumber,
+      salutation: user.salutation,
+      street: user.street,
+      houseNumber: user.houseNumber,
+      zipCode: user.zipCode,
+      city: user.city,
+      additionalAddressInformation: user.additionalAddressInformation
+    },
+    saveFormDataTO: {
+      formData: {
+        gewobag_gesamtzahl_der_einziehenden_personen_erwachsene_und_kinder: user.gewobag_gesamtzahl_der_einziehenden_personen_erwachsene_und_kinder,
+        gewobag_fuer_wen_wird_die_wohnungsanfrage_gestellt:
+          "Für mich selbst oder meine Angehörigen",
+        gewobag_datenschutzhinweis_bestaetigt: true,
+      },
+      files: [],
+    },
+  };
 
-  await Promise.all([
-    setGender(page, data),
-    setLastName(page, data),
-    setfirstName(page, data),
-    setTitle(page, data),
-    setBirthday(page, data),
-    setBirthmonth(page, data),
-    setBirthyear(page, data),
-    setStreet(page, data),
-    setHausnr(page, data),
-    setFloor(page, data),
-    setDoornr(page, data),
-    setZip(page, data),
-    setCity(page, data),
-    setPhone(page, data),
-    setEmail(page, data),
-    check(page, data)
-  ])
-
-  const now = new Date().getTime();
-  await page.screenshot({ path: `${user.firstName}.${now}before.png`, fullPage: true });
-
-  await page.click('input[type="submit"]');
-
-  await page.screenshot({ path: `${user.firstName}.${now}after.png`, fullPage: true });
-};
-
-const launch = async () => {
-  browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox']
-  });
+  axios
+    .post(
+      "https://app.wohnungshelden.de/api/applicationFormEndpoint/3.0/form/create-application/78f041a8-0c9d-45ba-b290-e1e366cf2e27/7100%2F77710%2F0102%2F0034",
+      data,
+      {
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Accept-Language":
+            "en-US,en;q=0.9,ar;q=0.8,pl;q=0.7,fr;q=0.6,de;q=0.5,cs;q=0.4,und;q=0.3,eu;q=0.2,es;q=0.1,sv;q=0.1",
+          "Content-Type": "application/json",
+          Origin: "https://app.wohnungshelden.de",
+          "User-Agent":
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+        },
+      }
+    )
+    .then((response) => {
+      console.log("🚀 ~ file: gewobag.ts:61 ~ .then ~ response.data:", response.data)
+    })
+    .catch((error) => {
+      console.log("🚀 ~ file: gewobag.ts:63 ~ applyToHouse ~ error:", error.response ? error.response.data : error.message)
+    });
 }
 
-launch();
