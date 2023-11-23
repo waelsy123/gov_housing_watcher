@@ -16,6 +16,8 @@ export interface User {
     desired_room_number: number;
     phone: string;
     email: string;
+    max_deposit: number;
+    max_price: number;
 }
 
 export let users: User[] = [{
@@ -34,7 +36,9 @@ export let users: User[] = [{
     city: "Wien",
     desired_room_number: 3,
     phone: "06608118959",
-    email: "obaidahantouch730@gmail.com"
+    email: "obaidahantouch730@gmail.com",
+    max_deposit: 10000,
+    max_price: 1000
 },
 {
     gender: "m",
@@ -52,10 +56,12 @@ export let users: User[] = [{
     city: "Wien",
     desired_room_number: 4,
     phone: "06608118959",
-    email: "obaidahantouch730@gmail.com"
+    email: "obaidahantouch730@gmail.com",
+    max_deposit: 10000,
+    max_price: 1000
 }]
 
-const dummyUsers = [{
+const dummyUsers: User[] = [{
     gender: "m",
     lastName: "Janski",
     firstName: "Sam",
@@ -71,7 +77,9 @@ const dummyUsers = [{
     city: "Praha",
     phone: "00420535637284",
     desired_room_number: 1,
-    email: "waelsy123@gmail.com"
+    email: "waelsy123@gmail.com",
+    max_deposit: 10000,
+    max_price: 1000
 }, {
     gender: "m",
     lastName: "Tyson",
@@ -87,8 +95,10 @@ const dummyUsers = [{
     zip: "12000",
     city: "Praha",
     phone: "00420535637284",
-    desired_room_number: 2,
-    email: "waelsy123+mike@gmail.com"
+    desired_room_number: 4,
+    email: "waelsy123+mike@gmail.com",
+    max_deposit: 30000,
+    max_price: 2000
 }]
 
 if (process.env.NODE_ENV !== 'prod') {

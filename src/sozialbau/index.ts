@@ -30,6 +30,10 @@ bot.on("message", (msg) => {
   fs.writeFileSync("chat_ids.txt", Array.from(chatIds).join("\n"));
 });
 
+function parsePrice(priceString: string): number {
+  return parseFloat(priceString.replace('€', '').replace('.', '').replace(',', '.').trim());
+}
+
 async function registerToHouse(house: House, user: User) {
   const link = house.link;
 
@@ -58,22 +62,62 @@ async function registerToHouse(house: House, user: User) {
   }
 }
 
-
-// define a function to send "Bingo" to all stored chat IDs
 async function sendMessageToAllThenApply(diff: House[]) {
   console.log("🚀 ~ file: index.ts:45 ~ sendMessageToAllChats ~ length", diff.length)
 
-  for (const house of diff) {
-    console.log("🚀 ~ file: index.ts:67 ~ sendMessageToAllThenApply ~ house:", house)
-    // for every house search for a fit user
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i];
-      if (user.desired_room_number === house.roomCount) {
-        await registerToHouse(house, user);
+  for (const [index, house] of diff.entries()) {
+    let appliers = '';
 
-        for (const chatId of chatIds) {
-          bot.sendMessage(chatId, user.firstName + '\n' + house.text + '\n' + house.link);
-        }
+    for (const user of users) {
+      // Check if the house matches the user's preferences
+      if (
+        house.roomCount === user.desired_room_number &&
+        house.deposit <= user.max_deposit &&
+        house.monthlyPrice <= user.max_price
+      ) {
+        await registerToHouse(house, user);
+        appliers += ` ${user.firstName} |`;
+      }
+    }
+
+    console.log("🚀 ~ file: index.ts:67 ~ sendMessageToAllThenApply ~ house:", house)
+
+    for (const chatId of chatIds) {
+      let message = '';
+
+      if (index === 0) {
+        message += `\n----------------------------------------`;
+      }
+
+      message += `\n\nHouse ID: ${index + 1}\n\n`;
+
+      if (house.text) {
+        message += `📝 *Description:* ${house.text}\n\n`;
+      }
+
+      if (house.link) {
+        message += `🔗 *Link:* [More Details](${house.link})\n`;
+      }
+
+      if (house.roomCount !== null) {
+        message += `🚪 *Room Count:* ${house.roomCount}\n`;
+      }
+
+      if (house.deposit !== null) {
+        message += `💰 *Deposit:* €${house.deposit.toFixed(2)}\n`;
+      }
+
+      if (house.monthlyPrice !== null) {
+        message += `💵 *Monthly Price:* €${house.monthlyPrice.toFixed(2)}\n`;
+      }
+
+      message += `🚀 *Applied for:* ${appliers}\n`;
+
+      try {
+        await bot.sendMessage(chatId, message, { parse_mode: 'Markdown', disable_web_page_preview: true });
+      } catch (error) {
+        console.error(`Failed to send message to chat ID ${chatId}`);
+        // Optionally, remove the chatId from chatIds if it consistently fails
       }
     }
   }
@@ -88,19 +132,23 @@ function extractTableRows(html: string): Set<House> {
   const rows = table.find("tr");
 
   // Create a Set to store the rows
-  const rowSet: Set<any> = new Set();
+  const rowSet: Set<House> = new Set();
 
   // Add the text of each row to the Set, after trimming it
   rows.each((i, row) => {
     const link = $(row).find('a').first().attr('href');
     if (!link) { return }
     const roomCount = Number($(row).find('td:eq(1)').text());
+    const deposit = parsePrice($(row).find('td:eq(2)').text());
+    const monthlyPrice = parsePrice($(row).find('td:eq(3)').text());
 
     rowSet.add({
       link: 'https://www.sozialbau.at' + link,
       text: $(row).text().trim(),
-      roomCount
-    })
+      roomCount,
+      deposit,
+      monthlyPrice
+    });
   });
 
   // Return the Set of rows
@@ -110,7 +158,9 @@ function extractTableRows(html: string): Set<House> {
 interface House {
   link?: string
   text: string
-  roomCount: number
+  roomCount: number,
+  deposit: number,
+  monthlyPrice: number
 }
 async function getListFromUrl(url: string): Promise<Set<House>> {
   // Use axios to fetch the HTML source code from the URL
@@ -132,7 +182,6 @@ async function main() {
   const l = [...await getListFromUrl(url)];
 
   let previousList = new Set([...l.slice(1, l.length)].map(x => x.link));
-  // let previousList = new Set([])
 
   // Create a cron job that runs every 5 seconds
   cron.schedule("*/1 * * * * *", async () => {
