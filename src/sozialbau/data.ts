@@ -38,7 +38,7 @@ export let users: User[] = [{
     phone: "06608118959",
     email: "obaidahantouch730@gmail.com",
     max_deposit: 10000,
-    max_price: 1000
+    max_price: 900
 },
 {
     gender: "m",
@@ -58,7 +58,7 @@ export let users: User[] = [{
     phone: "06608118959",
     email: "obaidahantouch730@gmail.com",
     max_deposit: 10000,
-    max_price: 1000
+    max_price: 1200
 }]
 
 const dummyUsers: User[] = [{
