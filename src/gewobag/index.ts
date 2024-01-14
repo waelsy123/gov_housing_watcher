@@ -62,9 +62,9 @@ async function sendMessageToAllThenApply(diff: House[]) {
   console.log("🚀 ~ file: index.ts:45 ~ sendMessageToAllChats ~ length", diff.length)
 
   for (const [index, house] of diff.entries()) {
-    if (house.roomCount && house.roomCount < 3) {
-      continue
-    }
+    // if (house.roomCount && house.roomCount < 3) {
+    //   continue
+    // }
 
     let appliers = '';
 
