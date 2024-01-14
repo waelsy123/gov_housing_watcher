@@ -19,25 +19,24 @@ export interface User {
     max_deposit: number;
     max_price: number;
 }
-
 export let users: User[] = [{
     gender: "m",
-    lastName: "S A Zeedia",
-    firstName: "Haytham",
+    lastName: "Al kowatly",
+    firstName: "Ammar",
     title: "t9",
-    birthday: "01",
-    birthmonth: "03",
-    birthyear: "1987",
-    street: "Auhofstrasse",
-    hausnr: "15a",
+    birthday: "03",
+    birthmonth: "07",
+    birthyear: "1982",
+    street: "lerchenfelder Gürtel",
+    hausnr: "26-28",
     floor: "0",
-    doornr: "01",
-    zip: "1130",
+    doornr: "24",
+    zip: "1070",
     city: "Wien",
     desired_room_number: 3,
-    phone: "06608118959",
+    phone: "06606622360",
     email: "obaidahantouch730@gmail.com",
-    max_deposit: 10000,
+    max_deposit: 15000,
     max_price: 900
 },
 {
@@ -57,7 +56,7 @@ export let users: User[] = [{
     desired_room_number: 4,
     phone: "06608118959",
     email: "obaidahantouch730@gmail.com",
-    max_deposit: 10000,
+    max_deposit: 15000,
     max_price: 1200
 }]
 
@@ -78,7 +77,7 @@ const dummyUsers: User[] = [{
     phone: "00420535637284",
     desired_room_number: 1,
     email: "waelsy123@gmail.com",
-    max_deposit: 10000,
+    max_deposit: 15000,
     max_price: 1000
 }, {
     gender: "m",
