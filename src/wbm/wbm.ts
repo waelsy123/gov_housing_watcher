@@ -1,8 +1,36 @@
 import * as puppeteer from "puppeteer";
-import { setTextInput, sleep } from "../common/common";
+import { selectOption, setTextInput, sleep } from "../common/common";
 import { User } from "./data";
+import { House } from ".";
 
 let browser;
+
+const setSex = async (page, data) => {
+  console.log("🚀 ~ setSex ~ data:", data)
+  const selectorStr = '[name="tx_powermail_pi1[field][anrede]"'
+  await selectOption(page, selectorStr, data.sex, 1)
+}
+
+const setZimmeranzahl = async (page, data) => {
+  const selectorStr = '[name="tx_powermail_pi1[field][wbszimmeranzahl]"'
+  await selectOption(page, selectorStr, data.zimmeranzahl.toString(), 1)
+}
+
+const setWBScode = async (page, data) => {
+  const selectorStr = '[name="tx_powermail_pi1[field][einkommensgrenzenacheinkommensbescheinigung9]"'
+  await selectOption(page, selectorStr, data.wbsCode.toString(), 1)
+}
+
+const setWBSDate = async (page, data) => {
+  const selectorStr = '[name="tx_powermail_pi1[field][wbsgueltigbis]"]'; // Selector for the date input field
+  await page.$eval(selectorStr, (el, value) => { el.value = value; }, data.expireDate); // Set the new date
+
+  // // Optionally, verify if the date was set correctly
+  // const result = await page.$eval(selectorStr, el => el.value);
+  // if (result !== data.expireDate) {
+  //   return await setWBSDate(page, data); // Retry if the date wasn't set correctly
+  // }
+}
 
 const setLastName = async (page, data) => {
   const selectorStr = '[name="tx_powermail_pi1[field][name]"]'
@@ -39,7 +67,7 @@ const setEmail = async (page, data) => {
   await setTextInput(page, selectorStr, data.email)
 }
 
-const check = async (page, data) => {
+const checkCookie = async (page, data) => {
   await page.$$eval('[id="powermail_field_datenschutzhinweis_1"]', elements => {
     elements[0].checked = true
   })
@@ -51,9 +79,40 @@ const check = async (page, data) => {
   console.log("🚀 ~ file: applyToHouse.ts:150 ~ done ~ done", done)
 
   if (!done) {
-    await check(page, data)
+    await checkCookie(page, data)
   }
 }
+
+
+const checkWBS = async (page, data) => {
+  await page.$$eval('[id="powermail_field_wbsvorhanden_1"]', elements => {
+    elements[0].click()
+  })
+
+  const done = await page.$$eval('[id="powermail_field_wbsvorhanden_1"]', elements => {
+    return elements[0].checked
+  })
+
+  if (!done) {
+    await checkWBS(page, data)
+  }
+}
+
+const checkWBS2 = async (page, data) => {
+  const selector = `[id="powermail_field_wbsmitbesonderemwohnbedarf_1"]`
+  await page.$$eval(selector, elements => {
+    elements[0].click()
+  })
+
+  const done = await page.$$eval(selector, elements => {
+    return elements[0].checked
+  })
+
+  if (!done) {
+    await checkWBS2(page, data)
+  }
+}
+
 
 
 const removeCookie = async (page) => {
@@ -66,7 +125,6 @@ const removeCookie = async (page) => {
   } catch (e) {
 
   }
-
 }
 
 const submit = async (page) => {
@@ -75,8 +133,10 @@ const submit = async (page) => {
   })
 }
 
+export const applyToHouse = async (house: House, user: User) => {
+  const url = house.link;
+  const wbs = house.wbs;
 
-export const applyToHouse = async (url, user: User) => {
   console.log("🚀 ~ file: applyToHouse.ts:184 ~ applyToHouse ~ url", url)
 
   const data = user;
@@ -97,8 +157,17 @@ export const applyToHouse = async (url, user: User) => {
 
   await removeCookie(page)
 
+  if (wbs) {
+    await checkWBS(page, data);
+    await checkWBS2(page, data);
+    await setZimmeranzahl(page, data);
+    await setWBScode(page, data);
+    await setWBSDate(page, data);
+  }
+
 
   await Promise.all([
+    setSex(page, data),
     setLastName(page, data),
     setfirstName(page, data),
     setStreet(page, data),
@@ -106,18 +175,18 @@ export const applyToHouse = async (url, user: User) => {
     setCity(page, data),
     setPhone(page, data),
     setEmail(page, data),
-    check(page, data)
+    checkCookie(page, data)
   ])
 
   await removeCookie(page)
   const before = new Date().getTime();
   await page.screenshot({ path: `${before}before.png`, fullPage: true });
 
-  await submit(page)
+  await submit(page);
 
   await sleep(1000)
   await removeCookie(page)
-  await sleep(1000)
+  await sleep(100000)
 
   const after = new Date().getTime();
   await page.screenshot({ path: `${after}after.png`, fullPage: true });
@@ -125,7 +194,7 @@ export const applyToHouse = async (url, user: User) => {
 
 const launch = async () => {
   browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
     args: ['--no-sandbox']
   });
 }

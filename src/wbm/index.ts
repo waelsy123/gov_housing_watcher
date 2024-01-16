@@ -6,6 +6,7 @@ const cron = require("node-cron");
 import * as TelegramBot from "node-telegram-bot-api";
 import * as fs from "fs";
 import { User, token, users } from './data';
+import { applyToHouse } from "./wbm";
 export const domain = 'https://www.wbm.de/'
 
 // Create a Telegram bot
@@ -30,11 +31,9 @@ bot.on("message", (msg) => {
   fs.writeFileSync("chat_ids.txt", Array.from(chatIds).join("\n"));
 });
 
-async function registerToHouse(house: House, user: User) {
-  // applyToHouse(link);
-}
-
-
+// async function registerToHouse(house: House, user: User) {
+//   // applyToHouse(link);
+// }
 
 // Function to send details of each house to all stored chat IDs
 async function sendMessageToAllThenApply(diff: House[]): Promise<void> {
@@ -50,6 +49,17 @@ async function sendMessageToAllThenApply(diff: House[]): Promise<void> {
     for (const chatId of chatIds) {
       await bot.sendMessage(chatId, message);
     }
+
+
+    // Check each user's room number preference and apply if the house fits
+    for (const user of users) {
+      // Check if the house's room count is within the user's preferred range
+      if (house.roomCount >= user.min_room_number && house.roomCount <= user.max_room_number) {
+        // Call applyToHouse function
+        await applyToHouse(house, user);
+      }
+    }
+
   }
 }
 
@@ -76,23 +86,23 @@ function extractItems(html: string): Set<House> {
     const desc = $(item).find('.main-property-list').text().trim();
 
     let roomCount = 0;
-    if (desc.includes('Zimmer:1')) {
+    if (desc.includes('Zimmer:1') || desc.includes('Zimmer1')) {
       roomCount = 1
-    } else if (desc.includes('Zimmer:2')) {
+    } else if (desc.includes('Zimmer:2') || desc.includes('Zimmer2')) {
       roomCount = 2
-    } else if (desc.includes('Zimmer:3')) {
+    } else if (desc.includes('Zimmer:3') || desc.includes('Zimmer3')) {
       roomCount = 3
-    } else if (desc.includes('Zimmer:4')) {
+    } else if (desc.includes('Zimmer:4') || desc.includes('Zimmer4')) {
       roomCount = 4
-    } else if (desc.includes('Zimmer:5')) {
+    } else if (desc.includes('Zimmer:5') || desc.includes('Zimmer5')) {
       roomCount = 5
-    } else if (desc.includes('Zimmer:6')) {
+    } else if (desc.includes('Zimmer:6') || desc.includes('Zimmer6')) {
       roomCount = 6
-    } else if (desc.includes('Zimmer:7')) {
+    } else if (desc.includes('Zimmer:7') || desc.includes('Zimmer7')) {
       roomCount = 7
-    } else if (desc.includes('Zimmer:8')) {
+    } else if (desc.includes('Zimmer:8') || desc.includes('Zimmer8')) {
       roomCount = 8
-    } else if (desc.includes('Zimmer:9')) {
+    } else if (desc.includes('Zimmer:9') || desc.includes('Zimmer9')) {
       roomCount = 9
     }
 
@@ -108,7 +118,7 @@ function extractItems(html: string): Set<House> {
   return list;
 }
 
-interface House {
+export interface House {
   link: string
   text: string
   roomCount: number
@@ -132,13 +142,15 @@ const url = "https://www.wbm.de/wohnungen-berlin/angebote";
 
 async function main() {
   // Previous value of the page source code
-  const l = [...await getListFromUrl(url)];
+  // const l = [...await getListFromUrl(url)];
+  const l = []
 
   let previousList = new Set([...l.slice(1, l.length)].map(x => x.link));
 
   // Create a cron job that runs every 5 seconds
-  cron.schedule("*/3 * * * * *", async () => {
+  cron.schedule("*/40 * * * * *", async () => {
     const currentList = await getListFromUrl(url);
+    console.log("🚀 ~ cron.schedule ~ currentList:", currentList)
     let diff = [...currentList].filter((x) => !previousList.has(x.link));
 
     // Check if the current value is different from the previous value

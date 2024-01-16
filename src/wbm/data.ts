@@ -1,5 +1,6 @@
 
 export interface User {
+  sex: string;
   lastName: string;
   firstName: string;
   street: string;
@@ -10,9 +11,13 @@ export interface User {
   wbs: boolean;
   min_room_number: number;
   max_room_number: number;
+  expireDate: string;
+  zimmeranzahl: number;
+  wbsCode: number;
 }
 
 export let users: User[] = [{
+  sex: "Herr",
   lastName: "Albakgagi",
   firstName: "Mamoun",
   street: "Angerburger allee 53 /7OG",
@@ -23,7 +28,11 @@ export let users: User[] = [{
   wbs: true,
   min_room_number: 3,
   max_room_number: 6,
+  expireDate: "2024-10-31",
+  zimmeranzahl: 6,
+  wbsCode: 100
 }, {
+  sex: "Frau",
   lastName: "Almatar",
   firstName: "Jomana",
   street: "Tatinger Straße 36",
@@ -34,7 +43,11 @@ export let users: User[] = [{
   wbs: true,
   min_room_number: 3,
   max_room_number: 6,
+  expireDate: "2024-10-31",
+  zimmeranzahl: 6,
+  wbsCode: 100
 }, {
+  sex: "Herr",
   lastName: "Matar",
   firstName: "Hamdan",
   street: "Angerburger Allee 53/7OG",
@@ -45,7 +58,11 @@ export let users: User[] = [{
   wbs: true,
   min_room_number: 2.5,
   max_room_number: 3,
+  expireDate: "2024-11-30",
+  zimmeranzahl: 3,
+  wbsCode: 100
 }, {
+  sex: "Frau",
   lastName: "Aljarad",
   firstName: "Linah",
   street: "Angerburger Allee 53/7OG",
@@ -56,30 +73,41 @@ export let users: User[] = [{
   wbs: true,
   min_room_number: 2.5,
   max_room_number: 3,
+  expireDate: "2024-11-30",
+  zimmeranzahl: 3,
+  wbsCode: 100
 }]
 
 const dummyUsers = [{
-  lastName: "Almattar",
-  firstName: "Mohamad",
+  sex: "Herr",
+  lastName: "hassan",
+  firstName: "adf",
   street: "Diesterwegstrasse 9c",
   zip: "10405",
   city: "Berlin",
-  phone: "00491783751508",
+  phone: "00491783831508",
   email: "mhdwasimalmattar@gmail.com",
   wbs: true,
   min_room_number: 2.5,
   max_room_number: 3,
+  expireDate: "2024-11-30",
+  zimmeranzahl: 3,
+  wbsCode: 160
 }, {
-  lastName: "Almattar",
-  firstName: "Mohamad",
+  sex: "Herr",
+  lastName: "Mike",
+  firstName: "Mike",
   street: "Diesterwegstrasse 9c",
   zip: "10405",
   city: "Berlin",
-  phone: "00491783751508",
+  phone: "00491727374738",
   email: "mhdwasimalmattar@gmail.com",
   wbs: true,
-  min_room_number: 1,
+  min_room_number: 4,
   max_room_number: 6,
+  expireDate: "2024-11-30",
+  zimmeranzahl: 4,
+  wbsCode: 140
 }]
 
 if (process.env.NODE_ENV !== 'prod') {
