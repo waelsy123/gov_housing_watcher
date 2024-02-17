@@ -58,6 +58,44 @@ export let users: User[] = [
     email: "obaidahantouch730@gmail.com",
     max_deposit: 28000,
     max_price: 1800
+}, {
+    gender: "m",
+    lastName: "Jangir",
+    firstName: "khaled",
+    title: "t9",
+    birthday: "16",
+    birthmonth: "04",
+    birthyear: "1976",
+    street: "kirchengasse",
+    hausnr: "3",
+    floor: "1",
+    doornr: "1",
+    zip: "7551",
+    city: "Stegersbach",
+    desired_room_number: 4,
+    phone: " ",
+    email: "obaidahantouch730@gmail.com",
+    max_deposit: 28000,
+    max_price: 1800
+}, {
+    gender: "m",
+    lastName: "Jangir",
+    firstName: "khaled",
+    title: "t9",
+    birthday: "16",
+    birthmonth: "04",
+    birthyear: "1976",
+    street: "kirchengasse",
+    hausnr: "3",
+    floor: "1",
+    doornr: "1",
+    zip: "7551",
+    city: "Stegersbach",
+    desired_room_number: 5,
+    phone: " ",
+    email: "obaidahantouch730@gmail.com",
+    max_deposit: 28000,
+    max_price: 1800
 }]
 
 const dummyUsers: User[] = [
