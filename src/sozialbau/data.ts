@@ -61,26 +61,26 @@ export let users: User[] = [
 }]
 
 const dummyUsers: User[] = [
-    //     {
-    //     gender: "m",
-    //     lastName: "Janski",
-    //     firstName: "Sam",
-    //     title: "t9",
-    //     birthday: "02",
-    //     birthmonth: "04",
-    //     birthyear: "1995",
-    //     street: "Salmovska",
-    //     hausnr: "10",
-    //     floor: "2",
-    //     doornr: "14",
-    //     zip: "12000",
-    //     city: "Praha",
-    //     phone: "00420535637284",
-    //     desired_room_number: 1,
-    //     email: "waelsy123@gmail.com",
-    //     max_deposit: 15000,
-    //     max_price: 1000
-    // },
+        {
+        gender: "m",
+        lastName: "Janski",
+        firstName: "Sam",
+        title: "t9",
+        birthday: "02",
+        birthmonth: "04",
+        birthyear: "1995",
+        street: "Salmovska",
+        hausnr: "10",
+        floor: "2",
+        doornr: "14",
+        zip: "12000",
+        city: "Praha",
+        phone: "00420535637284",
+        desired_room_number: 1,
+        email: "waelsy123@gmail.com",
+        max_deposit: 15000,
+        max_price: 1000
+    },
     {
         gender: "m",
         lastName: "Tyson",
