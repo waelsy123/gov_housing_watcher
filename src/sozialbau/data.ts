@@ -76,7 +76,7 @@ const dummyUsers: User[] = [
         zip: "12000",
         city: "Praha",
         phone: "00420535637284",
-        desired_room_number: 1,
+        desired_room_number: 2,
         email: "waelsy123@gmail.com",
         max_deposit: 15000,
         max_price: 1000
